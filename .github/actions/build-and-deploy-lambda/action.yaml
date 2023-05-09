@@ -1,0 +1,58 @@
+name: Build and Deploy Lambda
+description: Builds and Deploys AWS Lambda
+inputs:
+  application-name:
+    description: name of application
+    required: true
+  folder-name:
+    description: folder when application source code in location
+    required: true
+  s3-bucket:
+    description: s3 bucket containg lambda binaries
+    required: true  
+  s3-prefix:
+    description: s3 folder in tennis app infra s3 bucket
+    required: true
+  has-api:
+    description: Does API Gateway expose Lambda APIs
+    default: 'false'    
+outputs:
+  api-url:
+    description: url of api for API Gateway 
+    value: ${{ steps.get-api-url.outputs.api-url }} 
+runs:
+  using: composite
+  steps:
+      - name: Install dependencies
+        run: |
+          cd ${{ inputs.folder-name }}/${{ inputs.application-name }}
+          npm install
+          npm install -g esbuild
+        shell: bash
+      - name: Run tests
+        run: |
+          cd ${{ inputs.folder-name }}
+          docker-compose up -d
+          sleep 10
+          cd ${{ inputs.application-name }}
+          npm test
+        shell: bash        
+      - name: Build and Package
+        run: |
+          cd ${{ inputs.folder-name }}
+          sam build -t template.yaml
+          sam package --s3-bucket ${{ inputs.s3-bucket }} --s3-prefix ${{ inputs.s3-prefix }} --output-template-file packaged.yml --template .aws-sam/build/template.yaml
+        shell: bash  
+      - name: Deploy
+        run: |
+          cd ${{ inputs.folder-name }}
+          aws cloudformation deploy --template-file packaged.yml --stack-name ${{ inputs.folder-name }} --tags Product=tennis-rankings-app  --capabilities CAPABILITY_IAM   
+        shell: bash
+      - name: Get Api Gateway Url
+        id: get-api-url
+        if: inputs.has-api == 'true'
+        run: |
+          APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
+          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${APP_API_CF_EXPORT_NAME}'].Value" --output text)
+          echo "api-url=${API_URL}" >> $GITHUB_OUTPUT
+        shell: bash
