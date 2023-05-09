@@ -3,10 +3,10 @@ import DynamoDb from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import PlayerResult from '@/model/PlayerResult';
 
-export const createApiEvent = (path: string): APIGatewayProxyEvent => {
+export const createApiEvent = (path: string, body = 'test'): APIGatewayProxyEvent => {
     return {
         httpMethod: '',
-        body: '',
+        body: body,
         headers: {},
         isBase64Encoded: false,
         multiValueHeaders: {},

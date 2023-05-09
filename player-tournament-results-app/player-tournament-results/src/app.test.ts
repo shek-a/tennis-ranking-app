@@ -14,7 +14,7 @@ jest.mock('@/handler/putPlayer', () => {
     };
 });
 
-describe.skip('test player handler', () => {
+describe('test player handler', () => {
     it('should call put player handler', () => {
         const event = createApiEvent('PUT /player-result');
 

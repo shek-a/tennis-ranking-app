@@ -8,9 +8,17 @@ const createPlayerResult = (body: any): PlayerResult => {
     const playerResult = new PlayerResult();
     playerResult.firstName = body['firstName'];
     playerResult.lastName = body['lastName'];
-    playerResult.dateOfBirth = body['dateOfBirth'];
+
+    const playerDateOfBirth = new Date(body['dateOfBirth']);
+
+    if (isNaN(playerDateOfBirth.getDay())) {
+        throw new HttpError(400, { error: 'invalid date provided' });
+    }
+
+    playerResult.dateOfBirth = playerDateOfBirth;
     playerResult.tournament = body['tournament'];
     playerResult.points = body['points'];
+    console.log('player result', playerResult);
     return playerResult;
 };
 
