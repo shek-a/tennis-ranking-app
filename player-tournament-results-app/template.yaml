@@ -1,33 +1,30 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  sam-app
-
-  Sample SAM Template for sam-app
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Description: Player Tournaments Result Application Lambda and DynamoDb
 Globals:
   Function:
     Timeout: 3
-
     Tracing: Active
   Api:
     TracingEnabled: true
 Resources:
-  HelloWorldFunction:
+  PlayerTournamentResultsApplication:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: hello-world/
-      Handler: app.lambdaHandler
+      CodeUri: player-tournament-results/src/
+      Handler: app.playerHandler
       Runtime: nodejs18.x
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        PlayerTournamentResults:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /player-result
+            Method: put
+      Policies:    
+      - DynamoDBCrudPolicy:
+          TableName: !Ref PlayerTournamentResultsTable      
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -36,30 +33,56 @@ Resources:
         Sourcemap: true
         EntryPoints:
         - app.ts
-
-  ApplicationResourceGroup:
-    Type: AWS::ResourceGroups::Group
+  PlayerTournamentResultsTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      Name:
-        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
-      ResourceQuery:
-        Type: CLOUDFORMATION_STACK_1_0
-  ApplicationInsightsMonitoring:
-    Type: AWS::ApplicationInsights::Application
-    Properties:
-      ResourceGroupName:
-        Ref: ApplicationResourceGroup
-      AutoConfigurationEnabled: 'true'
+      TableName: "player_tournment_results"
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S      
+        - AttributeName: firstName
+          AttributeType: S
+        - AttributeName: lastName
+          AttributeType: S          
+        - AttributeName: tournament
+          AttributeType: S 
+      GlobalSecondaryIndexes:
+        - IndexName: first_name-index
+          KeySchema:
+            - AttributeName: firstName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: last_name-index
+          KeySchema:
+            - AttributeName: lastName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: tournament-index
+          KeySchema:
+            - AttributeName: tournament
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL                        
+      BillingMode: PAY_PER_REQUEST  
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  PlayerTournamentResultsApplicationUri:
+    Description: API Gateway endpoint URL for Prod stage for Player Tournament Results Application
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/player-result"
+    Export:
+      Name: "player-tournament-results-application-url"
+  PlayerTournamentResultsApplication:
+    Description: Player Tournament Results Application Lambda ARN
+    Value: !GetAtt PlayerTournamentResultsApplication.Arn
+  PlayerTournamentResultsApplicationIamRole:
+    Description: Implicit IAM Role created for Player Tournament Results Application Lambda
+    Value: !GetAtt PlayerTournamentResultsApplicationRole.Arn
+  PlayerTournamentResultsTableStreamArn:
+    Description: Arn of the Player Tournament Results DynamoDB Table Stream
+    Value: !GetAtt PlayerTournamentResultsTable.StreamArn
