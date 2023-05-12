@@ -24,8 +24,7 @@ jest.mock('@/mapper/eventMapper', () => {
 
 jest.mock('@/dao/playerResultDao', () => {
     return {
-        __esModule: true,
-        default: jest.fn().mockImplementationOnce(() => {
+        put: jest.fn().mockImplementationOnce(() => {
             return createTestPlayerResult();
         }),
     };
@@ -33,7 +32,7 @@ jest.mock('@/dao/playerResultDao', () => {
 
 describe('test put player handler', () => {
     it('should save player result', () => {
-        const result = putPlayer(createApiEvent('PUT /player-result'), createDynamoDbDataMapper());
+        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 201,
             headers: RESPONSE_HEADERS,
@@ -41,7 +40,7 @@ describe('test put player handler', () => {
         });
     });
     it('should return 400 upon client error', () => {
-        const result = putPlayer(createApiEvent('PUT /player-result'), createDynamoDbDataMapper());
+        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 400,
             headers: RESPONSE_HEADERS,
@@ -49,7 +48,7 @@ describe('test put player handler', () => {
         });
     });
     it('should return 500 upon server error', () => {
-        const result = putPlayer(createApiEvent('PUT /player-result'), createDynamoDbDataMapper());
+        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 500,
             headers: RESPONSE_HEADERS,

@@ -1,20 +1,15 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import mapFromEventToPlayerReuslt from '@/mapper/eventMapper';
-import savePlayerResult from '@/dao/playerResultDao';
-import { RESPONSE_HEADERS } from '@/constants';
+import mapFromEventToPlayerResult from '@/mapper/eventMapper';
+import { put } from '@/dao/playerResultDao';
 import errorResponse from '@/error/errorHandler';
+import { getApiResponse } from '@/Utils';
 
 export default async (event: APIGatewayProxyEvent, dataMapper: DataMapper): Promise<APIGatewayProxyResult> => {
-    let savedPlayerResult;
     try {
-        const playerResult = await mapFromEventToPlayerReuslt(event);
-        savedPlayerResult = await savePlayerResult(playerResult, dataMapper);
-        return {
-            statusCode: 201,
-            headers: RESPONSE_HEADERS,
-            body: JSON.stringify(savedPlayerResult),
-        };
+        const playerResult = await mapFromEventToPlayerResult(event);
+        const savedPlayerResult = await put(playerResult, dataMapper);
+        return getApiResponse(201, JSON.stringify(savedPlayerResult));
     } catch (e: unknown) {
         return errorResponse(e);
     }

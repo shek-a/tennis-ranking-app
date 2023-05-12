@@ -2,23 +2,21 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import DynamoDb from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import putPlayerHandler from '@/handler/putPlayer';
-import { RESPONSE_HEADERS } from './constants';
+import updatePlayerHandler from '@/handler/updatePlayer';
 import logger from './logger';
+import { getApiResponse } from './Utils';
 
 export const playerHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const client = new DynamoDb({ region: 'ap-southeast-2' });
     const mapper = new DataMapper({ client });
-    logger.info(`player handler`);
-    logger.info(`player event: ${event.path}`);
-
-    switch (event.path) {
-        case '/player-result':
+    logger.info(`http method: ${event.httpMethod}`);
+    switch (event.httpMethod) {
+        case 'PUT':
+            if (event.pathParameters && event.pathParameters.id) {
+                return updatePlayerHandler(event.pathParameters.id, event, mapper);
+            }
             return putPlayerHandler(event, mapper);
         default:
-            return {
-                statusCode: 400,
-                headers: RESPONSE_HEADERS,
-                body: JSON.stringify({ error: 'invalid request' }),
-            };
+            return getApiResponse(400, JSON.stringify({ error: 'invalid request' }));
     }
 };

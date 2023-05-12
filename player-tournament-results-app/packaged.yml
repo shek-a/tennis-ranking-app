@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Player Tournaments Result Application Lambda and DynamoDb
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Resources:
+  PlayerTournamentResultsApplication:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://sheka-infra-test/tennis-app/1656cfbdfbf9d3d7ce87a05df282fdeb
+      Handler: app.playerHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        PlayerTournamentResults:
+          Type: Api
+          Properties:
+            Path: /player-result
+            Method: put
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PlayerTournamentResultsTable
+      Environment:
+        Variables:
+          NODE_OPTIONS: ' --enable-source-maps'
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+        - app.ts
+        Minify: true
+        Sourcemap: true
+        Target: es2020
+      SamResourceId: PlayerTournamentResultsApplication
+  PlayerTournamentResultsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: player_tournment_results
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: firstName
+        AttributeType: S
+      - AttributeName: lastName
+        AttributeType: S
+      - AttributeName: tournament
+        AttributeType: S
+      GlobalSecondaryIndexes:
+      - IndexName: first_name-index
+        KeySchema:
+        - AttributeName: firstName
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: last_name-index
+        KeySchema:
+        - AttributeName: lastName
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: tournament-index
+        KeySchema:
+        - AttributeName: tournament
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+    Metadata:
+      SamResourceId: PlayerTournamentResultsTable
+Outputs:
+  PlayerTournamentResultsApplicationUri:
+    Description: API Gateway endpoint URL for Prod stage for Player Tournament Results
+      Application
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/player-result
+    Export:
+      Name: player-tournament-results-application-url
+  PlayerTournamentResultsApplication:
+    Description: Player Tournament Results Application Lambda ARN
+    Value:
+      Fn::GetAtt:
+      - PlayerTournamentResultsApplication
+      - Arn
+  PlayerTournamentResultsApplicationIamRole:
+    Description: Implicit IAM Role created for Player Tournament Results Application
+      Lambda
+    Value:
+      Fn::GetAtt:
+      - PlayerTournamentResultsApplicationRole
+      - Arn
+  PlayerTournamentResultsTableStreamArn:
+    Description: Arn of the Player Tournament Results DynamoDB Table Stream
+    Value:
+      Fn::GetAtt:
+      - PlayerTournamentResultsTable
+      - StreamArn

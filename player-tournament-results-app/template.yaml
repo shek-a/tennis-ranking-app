@@ -17,11 +17,16 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        PlayerTournamentResults:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        CreatePlayerTournamentResult:
+          Type: Api
           Properties:
             Path: /player-result
-            Method: put
+            Method: PUT
+        UpdatePlayerTournamentResult:
+          Type: Api
+          Properties:
+            Path: /player-result/{id}
+            Method: PUT            
       Policies:    
       - DynamoDBCrudPolicy:
           TableName: !Ref PlayerTournamentResultsTable      

@@ -1,0 +1,7 @@
+sam build -t template.yaml
+sam package --s3-bucket sheka-infra-test --s3-prefix tennis-app --output-template-file packaged.yml --template .aws-sam/build/template.yaml
+
+aws cloudformation deploy --template-file packaged.yml --stack-name player-tournament-results --capabilities CAPABILITY_IAM 
+
+
+aws cloudformation validate-template --template-body file://template.yaml

@@ -5,7 +5,7 @@ import eventMapper from './eventMapper';
 
 describe('test event to player result mapping', () => {
     it('should map api gateway event to a player result', () => {
-        const apiPutPlayerResultEvent = createApiEvent('PUT /player-result', createPlayerResultBody());
+        const apiPutPlayerResultEvent = createApiEvent('PUT', createPlayerResultBody());
         const result = eventMapper(apiPutPlayerResultEvent);
         expect(result).resolves.toEqual(
             createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 3000),
@@ -13,12 +13,12 @@ describe('test event to player result mapping', () => {
     });
 
     it('should throw a yup validation exception when player result fields are missing', () => {
-        const apiPutPlayerResultEvent = createApiEvent('PUT /player-result', createPlayerInvalidResultBody());
+        const apiPutPlayerResultEvent = createApiEvent('PUT', createPlayerInvalidResultBody());
         expect(eventMapper(apiPutPlayerResultEvent)).rejects.toThrow(ValidationError);
     });
 
     it('should throw a 400 Http error when an invalid date is provided', () => {
-        const apiPutPlayerResultEvent = createApiEvent('PUT /player-result', createInvalidDatePlayerResultBody());
+        const apiPutPlayerResultEvent = createApiEvent('PUT', createInvalidDatePlayerResultBody());
         expect(eventMapper(apiPutPlayerResultEvent)).rejects.toThrow(
             JSON.stringify({ error: 'invalid date provided' }),
         );
