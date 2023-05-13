@@ -21,39 +21,6 @@ const createPlayerResult = (body: any): PlayerResult => {
     return playerResult;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createUpdatePlayerResult = (playerResultId: string, body: any): PlayerResult => {
-    const playerResult = new PlayerResult();
-
-    playerResult.id = playerResultId;
-    if (body['firstName']) {
-        playerResult.firstName = body['firstName'];
-    }
-
-    if (body['lastName']) {
-        playerResult.lastName = body['lastName'];
-    }
-
-    if (body['dateOfBirth']) {
-        const playerDateOfBirth = new Date(body['dateOfBirth']);
-
-        if (isNaN(playerDateOfBirth.getDay())) {
-            throw new HttpError(400, { error: 'invalid date provided' });
-        }
-        playerResult.dateOfBirth = playerDateOfBirth;
-    }
-
-    if (body['tournament']) {
-        playerResult.tournament = body['tournament'];
-    }
-
-    if (body['points']) {
-        playerResult.points = body['points'];
-    }
-
-    return playerResult;
-};
-
 export default async (apiGatewayEvent: APIGatewayProxyEvent): Promise<PlayerResult> => {
     if (apiGatewayEvent.body) {
         const body = JSON.parse(apiGatewayEvent.body);
@@ -64,13 +31,26 @@ export default async (apiGatewayEvent: APIGatewayProxyEvent): Promise<PlayerResu
     throw new HttpError(400, { error: 'payload not found' });
 };
 
-export const mapFromUpdateEventToPlayerReuslt = async (
-    playerResultId: string,
+export const createUpdatePlayerResult = (
+    existingPlayerResult: PlayerResult,
     apiGatewayEvent: APIGatewayProxyEvent,
-): Promise<PlayerResult> => {
+): PlayerResult => {
     if (apiGatewayEvent.body) {
-        const body = JSON.parse(apiGatewayEvent.body);
-        return createUpdatePlayerResult(playerResultId, body);
+        const allowablePlayerResultAttributes = ['firstName', 'lastName', 'dateOfBirth', 'tournament', 'points'];
+        const updateBody = JSON.parse(apiGatewayEvent.body);
+
+        for (const attribute in updateBody) {
+            if (!allowablePlayerResultAttributes.includes(attribute)) {
+                delete updateBody[attribute];
+            }
+        }
+
+        const updatedPlayerResult = {
+            ...existingPlayerResult,
+            ...updateBody,
+        };
+
+        return Object.assign(new PlayerResult(), updatedPlayerResult);
     }
 
     throw new HttpError(400, { error: 'payload not found' });

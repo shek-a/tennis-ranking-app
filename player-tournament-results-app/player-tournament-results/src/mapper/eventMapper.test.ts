@@ -1,7 +1,7 @@
 import { expect, describe, it } from '@jest/globals';
 import { ValidationError } from 'yup';
 import { createApiEvent, createPlayerResult } from '../testUtils';
-import eventMapper from './eventMapper';
+import eventMapper, { createUpdatePlayerResult } from './eventMapper';
 
 describe('test event to player result mapping', () => {
     it('should map api gateway event to a player result', () => {
@@ -25,6 +25,49 @@ describe('test event to player result mapping', () => {
     });
 });
 
+describe('test update event to player result mapping', () => {
+    it('should add a single api gateway update event attribute to a player result', () => {
+        const existingPlayerResult = createPlayerResult(
+            'Roger',
+            'Federer',
+            new Date('1980-02-16'),
+            '2008 French Open',
+            3000,
+        );
+        const apiUpdatePlayerResultEvent = createApiEvent(
+            'PUT',
+            JSON.stringify({
+                id: '123',
+                points: 5000,
+            }),
+        );
+        const result = createUpdatePlayerResult(existingPlayerResult, apiUpdatePlayerResultEvent);
+        expect(result).toEqual(
+            createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 5000),
+        );
+    });
+    it('should add multiple api gateway update event attributes to a player result', () => {
+        const existingPlayerResult = createPlayerResult(
+            'Roger',
+            'Federer',
+            new Date('1980-02-16'),
+            '2008 French Open',
+            3000,
+        );
+        const apiUpdatePlayerResultEvent = createApiEvent(
+            'PUT',
+            JSON.stringify({
+                id: '123',
+                invalidAttribute: 'test',
+                points: 5000,
+                tournament: '2009 Wimbledon',
+            }),
+        );
+        const result = createUpdatePlayerResult(existingPlayerResult, apiUpdatePlayerResultEvent);
+        expect(result).toEqual(createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2009 Wimbledon', 5000));
+    });
+});
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createPlayerResultBody = (): any => {
     const playerResultBody = {
@@ -33,6 +76,7 @@ const createPlayerResultBody = (): any => {
         dateOfBirth: '1980-02-16',
         tournament: '2008 French Open',
         points: 3000,
+        invalid: 8999,
     };
 
     return JSON.stringify(playerResultBody);

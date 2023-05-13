@@ -11,17 +11,22 @@ Resources:
   PlayerTournamentResultsApplication:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sheka-infra-test/tennis-app/1656cfbdfbf9d3d7ce87a05df282fdeb
+      CodeUri: s3://sheka-infra-test/tennis-app/18e0bbab6954cb9e4e95c9c64747176c
       Handler: app.playerHandler
       Runtime: nodejs18.x
       Architectures:
       - x86_64
       Events:
-        PlayerTournamentResults:
+        CreatePlayerTournamentResult:
           Type: Api
           Properties:
             Path: /player-result
-            Method: put
+            Method: PUT
+        UpdatePlayerTournamentResult:
+          Type: Api
+          Properties:
+            Path: /player-result/{id}
+            Method: PUT
       Policies:
       - DynamoDBCrudPolicy:
           TableName:

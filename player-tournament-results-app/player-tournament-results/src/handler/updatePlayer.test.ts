@@ -6,7 +6,7 @@ import { RESPONSE_HEADERS } from '../constants';
 
 jest.mock('@/mapper/eventMapper', () => {
     return {
-        mapFromUpdateEventToPlayerReuslt: jest.fn().mockImplementation(() => {
+        createUpdatePlayerResult: jest.fn().mockImplementation(() => {
             return createTestPlayerResult();
         }),
     };

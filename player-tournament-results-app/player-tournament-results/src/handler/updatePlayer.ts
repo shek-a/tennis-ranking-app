@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import { mapFromUpdateEventToPlayerReuslt } from '@/mapper/eventMapper';
+import { createUpdatePlayerResult } from '@/mapper/eventMapper';
 import { get, update } from '@/dao/playerResultDao';
 import errorResponse from '@/error/errorHandler';
 import PlayerResult from '@/model/PlayerResult';
@@ -12,27 +12,21 @@ export default async (
     event: APIGatewayProxyEvent,
     dataMapper: DataMapper,
 ): Promise<APIGatewayProxyResult> => {
+    let playerResult = new PlayerResult();
+    playerResult.id = playerResultId;
     try {
-        if (await playerToUpdateExists(playerResultId, dataMapper)) {
-            const playerResult = await mapFromUpdateEventToPlayerReuslt(playerResultId, event);
-            const savedPlayerResult = await update(playerResult, dataMapper);
-            return getApiResponse(200, JSON.stringify(savedPlayerResult));
-        } else {
-            return getApiResponse(404, JSON.stringify({ error: `player result id ${playerResultId} not found` }));
-        }
+        playerResult = await get(playerResult, dataMapper);
+    } catch (e: unknown) {
+        logger.warn(`payer result id ${playerResultId} not found`);
+        return getApiResponse(404, JSON.stringify({ error: `player result id ${playerResultId} not found` }));
+    }
+
+    try {
+        const updatePlayerResult = await createUpdatePlayerResult(playerResult, event);
+        const savedPlayerResult = await update(updatePlayerResult, dataMapper);
+        console.dir(savedPlayerResult);
+        return getApiResponse(200, JSON.stringify(savedPlayerResult));
     } catch (e: unknown) {
         return errorResponse(e);
     }
-};
-
-const playerToUpdateExists = async (playerResultId: string, dataMapper: DataMapper): Promise<boolean> => {
-    const playerResult = new PlayerResult();
-    playerResult.id = playerResultId;
-    try {
-        await get(playerResult, dataMapper);
-    } catch (e: unknown) {
-        logger.warn(`payer result id ${playerResultId} not found`);
-        return false;
-    }
-    return true;
 };

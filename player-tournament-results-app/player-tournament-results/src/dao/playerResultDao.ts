@@ -13,6 +13,7 @@ export const get = (playerResult: PlayerResult, dataMapper: DataMapper): Promise
 };
 
 export const update = (playerResult: PlayerResult, dataMapper: DataMapper): Promise<PlayerResult> => {
+    console.dir(playerResult);
     logger.info(`Update player result for player ${playerResult.id} into DynamoDB.`);
     return dataMapper.update(playerResult);
 };
