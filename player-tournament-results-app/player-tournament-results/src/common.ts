@@ -1,5 +1,9 @@
 import { RESPONSE_HEADERS } from './constants';
 
+export type QueryParameters = {
+    [prop: string]: string;
+};
+
 type ApiResponse = {
     statusCode: number;
     headers: ResponseHeaders;

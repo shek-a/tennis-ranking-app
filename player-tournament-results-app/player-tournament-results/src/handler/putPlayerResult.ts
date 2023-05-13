@@ -3,7 +3,7 @@ import { DataMapper } from '@aws/dynamodb-data-mapper';
 import mapFromEventToPlayerResult from '@/mapper/eventMapper';
 import { put } from '@/dao/playerResultDao';
 import errorResponse from '@/error/errorHandler';
-import { getApiResponse } from '@/Utils';
+import { getApiResponse } from '@/common';
 
 export default async (event: APIGatewayProxyEvent, dataMapper: DataMapper): Promise<APIGatewayProxyResult> => {
     try {

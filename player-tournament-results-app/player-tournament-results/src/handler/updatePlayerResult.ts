@@ -5,7 +5,7 @@ import { get, update } from '@/dao/playerResultDao';
 import errorResponse from '@/error/errorHandler';
 import PlayerResult from '@/model/PlayerResult';
 import logger from '@/logger';
-import { getApiResponse } from '@/Utils';
+import { getApiResponse } from '@/common';
 
 export default async (
     playerResultId: string,
@@ -24,7 +24,6 @@ export default async (
     try {
         const updatePlayerResult = await createUpdatePlayerResult(playerResult, event);
         const savedPlayerResult = await update(updatePlayerResult, dataMapper);
-        console.dir(savedPlayerResult);
         return getApiResponse(200, JSON.stringify(savedPlayerResult));
     } catch (e: unknown) {
         return errorResponse(e);

@@ -1,7 +1,7 @@
 import { expect, describe, it, jest } from '@jest/globals';
 import { createApiEvent, createDynamoDbDataMapper, createPlayerResult } from '../testUtils';
 import PlayerResult from '../model/PlayerResult';
-import putPlayer from './putPlayer';
+import putPlayerResult from './putPlayerResult';
 import { RESPONSE_HEADERS } from '../constants';
 import HttpError from '../error/HttpError';
 
@@ -30,9 +30,9 @@ jest.mock('@/dao/playerResultDao', () => {
     };
 });
 
-describe('test put player handler', () => {
+describe('test put player result handler', () => {
     it('should save player result', () => {
-        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
+        const result = putPlayerResult(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 201,
             headers: RESPONSE_HEADERS,
@@ -40,7 +40,7 @@ describe('test put player handler', () => {
         });
     });
     it('should return 400 upon client error', () => {
-        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
+        const result = putPlayerResult(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 400,
             headers: RESPONSE_HEADERS,
@@ -48,7 +48,7 @@ describe('test put player handler', () => {
         });
     });
     it('should return 500 upon server error', () => {
-        const result = putPlayer(createApiEvent('PUT'), createDynamoDbDataMapper());
+        const result = putPlayerResult(createApiEvent('PUT'), createDynamoDbDataMapper());
         expect(result).resolves.toEqual({
             statusCode: 500,
             headers: RESPONSE_HEADERS,

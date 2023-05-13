@@ -1,7 +1,7 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { ValidationError } from 'yup';
 import HttpError from './HttpError';
-import { getApiResponse } from '@/Utils';
+import { getApiResponse } from '@/common';
 import logger from '@/logger';
 
 export default (e: unknown): APIGatewayProxyResult => {
