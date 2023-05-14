@@ -3,25 +3,37 @@ import { playerResultsHandler } from './app';
 import { createApiEvent } from './testUtils';
 import { RESPONSE_HEADERS } from './constants';
 
-jest.mock('@/handler/putPlayer', () => {
+jest.mock('@/handler/putPlayerResult', () => {
     return {
         __esModule: true,
         default: jest.fn().mockImplementation(() => {
             return {
                 statusCode: 200,
-                body: 'sucess put player response',
+                body: 'success put player response',
             };
         }),
     };
 });
 
-jest.mock('@/handler/updatePlayer', () => {
+jest.mock('@/handler/updatePlayerResult', () => {
     return {
         __esModule: true,
         default: jest.fn().mockImplementation(() => {
             return {
                 statusCode: 200,
-                body: 'sucess update player response',
+                body: 'success update player response',
+            };
+        }),
+    };
+});
+
+jest.mock('@/handler/getPlayerResults', () => {
+    return {
+        __esModule: true,
+        default: jest.fn().mockImplementation(() => {
+            return {
+                statusCode: 200,
+                body: 'success get player response',
             };
         }),
     };
@@ -34,7 +46,7 @@ describe('test player handler', () => {
         const result = playerResultsHandler(event);
         expect(result).resolves.toEqual({
             statusCode: 200,
-            body: 'sucess put player response',
+            body: 'success put player response',
         });
     });
 
@@ -44,7 +56,17 @@ describe('test player handler', () => {
         const result = playerResultsHandler(event);
         expect(result).resolves.toEqual({
             statusCode: 200,
-            body: 'sucess update player response',
+            body: 'success update player response',
+        });
+    });
+
+    it('should call get player handler when id path parameter is supplied', () => {
+        const event = createApiEvent('GET');
+
+        const result = playerResultsHandler(event);
+        expect(result).resolves.toEqual({
+            statusCode: 200,
+            body: 'success get player response',
         });
     });
 

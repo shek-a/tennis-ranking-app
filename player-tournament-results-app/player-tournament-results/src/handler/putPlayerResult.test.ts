@@ -17,7 +17,7 @@ jest.mock('@/mapper/eventMapper', () => {
                 throw new HttpError(400, { error: 'payload not found' });
             })
             .mockImplementationOnce(() => {
-                throw new Error('server error');
+                throw new Error('internal server error');
             }),
     };
 });

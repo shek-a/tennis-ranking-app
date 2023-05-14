@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import DynamoDb from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import getPlayersResultHandler from '@/handler/getPlayersResult';
+import getPlayerResultsHandler from '@/handler/getPlayerResults';
 import putPlayerResultHandler from '@/handler/putPlayerResult';
 import updateResultPlayerHandler from '@/handler/updatePlayerResult';
 import { getApiResponse } from './common';
@@ -16,7 +16,7 @@ export const playerResultsHandler = async (event: APIGatewayProxyEvent): Promise
             }
             return putPlayerResultHandler(event, mapper);
         case 'GET':
-            return getPlayersResultHandler(event, mapper);
+            return getPlayerResultsHandler(event, mapper);
 
         default:
             return getApiResponse(400, JSON.stringify({ error: 'invalid request' }));

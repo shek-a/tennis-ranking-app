@@ -20,7 +20,7 @@ jest.mock('@/dao/playerResultDao', () => {
                 return createTestPlayerResult();
             })
             .mockImplementationOnce(() => {
-                throw new Error('server error');
+                throw new Error('internal server error');
             }),
         get: jest
             .fn()
