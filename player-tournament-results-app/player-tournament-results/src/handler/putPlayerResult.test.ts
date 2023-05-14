@@ -58,5 +58,5 @@ describe('test put player result handler', () => {
 });
 
 const createTestPlayerResult = (): PlayerResult => {
-    return createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 2000);
+    return createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 2000);
 };

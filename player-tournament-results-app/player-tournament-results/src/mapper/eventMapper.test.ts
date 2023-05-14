@@ -7,9 +7,7 @@ describe('test event to player result mapping', () => {
     it('should map api gateway event to a player result', () => {
         const apiPutPlayerResultEvent = createApiEvent('PUT', createPlayerResultBody());
         const result = eventMapper(apiPutPlayerResultEvent);
-        expect(result).resolves.toEqual(
-            createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 3000),
-        );
+        expect(result).resolves.toEqual(createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 3000));
     });
 
     it('should throw a yup validation exception when player result fields are missing', () => {
@@ -27,13 +25,7 @@ describe('test event to player result mapping', () => {
 
 describe('test update event to player result mapping', () => {
     it('should add a single api gateway update event attribute to a player result', () => {
-        const existingPlayerResult = createPlayerResult(
-            'Roger',
-            'Federer',
-            new Date('1980-02-16'),
-            '2008 French Open',
-            3000,
-        );
+        const existingPlayerResult = createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 3000);
         const apiUpdatePlayerResultEvent = createApiEvent(
             'PUT',
             JSON.stringify({
@@ -42,18 +34,10 @@ describe('test update event to player result mapping', () => {
             }),
         );
         const result = createUpdatePlayerResult(existingPlayerResult, apiUpdatePlayerResultEvent);
-        expect(result).toEqual(
-            createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 5000),
-        );
+        expect(result).toEqual(createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 5000));
     });
     it('should add multiple api gateway update event attributes to a player result', () => {
-        const existingPlayerResult = createPlayerResult(
-            'Roger',
-            'Federer',
-            new Date('1980-02-16'),
-            '2008 French Open',
-            3000,
-        );
+        const existingPlayerResult = createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 3000);
         const apiUpdatePlayerResultEvent = createApiEvent(
             'PUT',
             JSON.stringify({
@@ -64,7 +48,7 @@ describe('test update event to player result mapping', () => {
             }),
         );
         const result = createUpdatePlayerResult(existingPlayerResult, apiUpdatePlayerResultEvent);
-        expect(result).toEqual(createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2009 Wimbledon', 5000));
+        expect(result).toEqual(createPlayerResult('Roger', 'Federer', '1980-02-16', '2009 Wimbledon', 5000));
     });
 });
 

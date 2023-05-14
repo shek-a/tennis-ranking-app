@@ -17,7 +17,7 @@ export default async (
     try {
         playerResult = await get(playerResult, dataMapper);
     } catch (e: unknown) {
-        logger.warn(`payer result id ${playerResultId} not found`);
+        logger.warn(`player result id ${playerResultId} not found.`);
         return getApiResponse(404, JSON.stringify({ error: `player result id ${playerResultId} not found` }));
     }
 

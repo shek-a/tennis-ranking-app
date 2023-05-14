@@ -4,13 +4,12 @@ import { getAllPlayerResults, getFilteredPlayerResults } from '@/dao/playerResul
 import errorResponse from '@/error/errorHandler';
 import { QueryParameters, getApiResponse } from '@/common';
 import PlayerResult from '@/model/PlayerResult';
+import { getCondtionExpression } from '@/QueryUtils';
 
 export default async (event: APIGatewayProxyEvent, dataMapper: DataMapper): Promise<APIGatewayProxyResult> => {
     try {
         const allowableQueryParameters = ['firstName', 'lastName', 'tournament'];
-        // https://stackoverflow.com/questions/55514388/how-to-handle-query-string-node-js-aws-lambda
         const queryStringParameters: QueryParameters = {};
-
         allowableQueryParameters.forEach((queryParameter) => {
             if (event.queryStringParameters && event.queryStringParameters[queryParameter]) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -21,7 +20,7 @@ export default async (event: APIGatewayProxyEvent, dataMapper: DataMapper): Prom
         if (isObjectEmpty(queryStringParameters)) {
             playerResults = await getAllPlayerResults(dataMapper);
         } else {
-            playerResults = await getFilteredPlayerResults(queryStringParameters, dataMapper);
+            playerResults = await getFilteredPlayerResults(getCondtionExpression(queryStringParameters), dataMapper);
         }
         return getApiResponse(200, JSON.stringify(playerResults));
     } catch (e: unknown) {
@@ -29,6 +28,6 @@ export default async (event: APIGatewayProxyEvent, dataMapper: DataMapper): Prom
     }
 };
 
-const isObjectEmpty = (objectName: object) => {
+const isObjectEmpty = (objectName: object): boolean => {
     return Object.keys(objectName).length === 0;
 };

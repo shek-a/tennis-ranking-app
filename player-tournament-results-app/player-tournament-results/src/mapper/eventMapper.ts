@@ -15,7 +15,7 @@ const createPlayerResult = (body: any): PlayerResult => {
         throw new HttpError(400, { error: 'invalid date provided' });
     }
 
-    playerResult.dateOfBirth = playerDateOfBirth;
+    playerResult.dateOfBirth = body['dateOfBirth'];
     playerResult.tournament = body['tournament'];
     playerResult.points = body['points'];
     return playerResult;

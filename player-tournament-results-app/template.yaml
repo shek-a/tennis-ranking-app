@@ -9,7 +9,7 @@ Globals:
     TracingEnabled: true
 Resources:
   PlayerTournamentResultsApplication:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: player-tournament-results/src/
       Handler: app.playerResultsHandler
@@ -34,14 +34,19 @@ Resources:
             Method: GET      
             RequestParameters:
               - method.request.querystring.firstName:
-                Required: false
-                Caching: false
+                  Required: false
+                  Caching: false
               - method.request.querystring.lastName:
-                Required: false
-                Caching: false       
+                  Required: false
+                  Caching: false       
               - method.request.querystring.tournament:
-                Required: false
-                Caching: false                                                              
+                  Required: false
+                  Caching: false     
+        RemovePlayerTournamentResult:
+          Type: Api
+          Properties:
+            Path: /player-result/{id}
+            Method: DELETE                                                                           
       Policies:    
       - DynamoDBCrudPolicy:
           TableName: !Ref PlayerTournamentResultsTable      

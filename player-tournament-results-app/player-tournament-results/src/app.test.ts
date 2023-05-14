@@ -39,8 +39,20 @@ jest.mock('@/handler/getPlayerResults', () => {
     };
 });
 
+jest.mock('@/handler/removePlayerResult', () => {
+    return {
+        __esModule: true,
+        default: jest.fn().mockImplementation(() => {
+            return {
+                statusCode: 200,
+                body: 'success remove player response',
+            };
+        }),
+    };
+});
+
 describe('test player handler', () => {
-    it('should call put player handler when no id path parameter is supplied', () => {
+    it('should call put player handler when no id path parameter is supplied on PUT call', () => {
         const event = createApiEvent('PUT');
 
         const result = playerResultsHandler(event);
@@ -50,7 +62,7 @@ describe('test player handler', () => {
         });
     });
 
-    it('should call update player handler when id path parameter is supplied', () => {
+    it('should call update player handler when id path parameter is supplied on PUT call', () => {
         const event = createApiEvent('PUT', '', { id: '123' });
 
         const result = playerResultsHandler(event);
@@ -60,13 +72,23 @@ describe('test player handler', () => {
         });
     });
 
-    it('should call get player handler when id path parameter is supplied', () => {
+    it('should call get player handler when id path parameter is supplied on GET call', () => {
         const event = createApiEvent('GET');
 
         const result = playerResultsHandler(event);
         expect(result).resolves.toEqual({
             statusCode: 200,
             body: 'success get player response',
+        });
+    });
+
+    it('should call remove player handler when id path parameter is supplied on DELETE call', () => {
+        const event = createApiEvent('DELETE');
+
+        const result = playerResultsHandler(event);
+        expect(result).resolves.toEqual({
+            statusCode: 200,
+            body: 'success remove player response',
         });
     });
 

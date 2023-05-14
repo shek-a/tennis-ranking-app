@@ -87,11 +87,11 @@ describe('test get player results handler with query string parameters', () => {
 
 const createTestGetAllPlayerResult = (): Array<PlayerResult> => {
     return [
-        createPlayerResult('Roger', 'Federer', new Date('1980-02-16'), '2008 French Open', 2000),
-        createPlayerResult('Rafa', 'Nadal', new Date('1986-02-07'), '2022 French Open', 5000),
+        createPlayerResult('Roger', 'Federer', '1980-02-16', '2008 French Open', 2000),
+        createPlayerResult('Rafa', 'Nadal', '1986-02-07', '2022 French Open', 5000),
     ];
 };
 
 const createTestFilteredPlayerResults = (): Array<PlayerResult> => {
-    return [createPlayerResult('Novak', 'Djokovic', new Date('1987-07-07'), '2022 Australian Open', 2000)];
+    return [createPlayerResult('Novak', 'Djokovic', '1987-07-07', '2022 Australian Open', 2000)];
 };

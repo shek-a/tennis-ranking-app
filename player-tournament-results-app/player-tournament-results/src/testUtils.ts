@@ -63,7 +63,7 @@ export const createApiEvent = (
 export const createPlayerResult = (
     firstName: string,
     lastName: string,
-    dateOfBirth: Date,
+    dateOfBirth: string,
     tournament: string,
     points: number,
 ): PlayerResult => {

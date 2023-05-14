@@ -13,7 +13,7 @@ export default class PlayerResult {
     lastName!: string;
 
     @attribute()
-    dateOfBirth!: Date;
+    dateOfBirth!: string;
 
     @attribute()
     tournament!: string;

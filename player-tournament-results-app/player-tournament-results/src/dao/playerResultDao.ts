@@ -1,7 +1,7 @@
 import PlayerResult from '@/model/PlayerResult';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import logger from '@/logger';
-import { QueryParameters } from '@/common';
+import { ConditionExpression } from '@aws/dynamodb-expressions';
 
 export const put = (playerResult: PlayerResult, dataMapper: DataMapper): Promise<PlayerResult> => {
     logger.info(`Saving player result into DynamoDB.`);
@@ -27,12 +27,17 @@ export const getAllPlayerResults = async (dataMapper: DataMapper): Promise<Array
 };
 
 export const getFilteredPlayerResults = async (
-    queryParameters: QueryParameters,
+    condition: ConditionExpression,
     dataMapper: DataMapper,
 ): Promise<Array<PlayerResult>> => {
     const playerResults: Array<PlayerResult> = [];
-    for await (const playerResult of dataMapper.query(PlayerResult, queryParameters)) {
+    for await (const playerResult of dataMapper.scan(PlayerResult, { filter: condition })) {
         playerResults.push(playerResult);
     }
     return playerResults;
+};
+
+export const remove = (playerResultId: string, dataMapper: DataMapper): void => {
+    dataMapper.delete(Object.assign(new PlayerResult(), { id: playerResultId }));
+    logger.info(`Successfully deleted player result for player ${playerResultId} from DynamoDB.`);
 };

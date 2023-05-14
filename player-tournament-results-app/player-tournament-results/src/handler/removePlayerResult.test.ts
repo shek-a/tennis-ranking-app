@@ -1,26 +1,18 @@
 import { expect, describe, it, jest } from '@jest/globals';
 import { createApiEvent, createDynamoDbDataMapper, createPlayerResult } from '../testUtils';
 import PlayerResult from '../model/PlayerResult';
-import updatePlayerResult from './updatePlayerResult';
+import removePlayerResult from './removePlayerResult';
 import { RESPONSE_HEADERS } from '../constants';
-
-jest.mock('@/mapper/eventMapper', () => {
-    return {
-        createUpdatePlayerResult: jest.fn().mockImplementation(() => {
-            return createTestPlayerResult();
-        }),
-    };
-});
+import HttpError from '../error/HttpError';
 
 jest.mock('@/dao/playerResultDao', () => {
     return {
-        update: jest
+        remove: jest
             .fn()
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            .mockImplementationOnce(() => {})
             .mockImplementationOnce(() => {
-                return createTestPlayerResult();
-            })
-            .mockImplementationOnce(() => {
-                throw new Error('internal server error');
+                throw new HttpError(500, { error: `unable to remove player result id 123` });
             }),
         get: jest
             .fn()
@@ -36,18 +28,24 @@ jest.mock('@/dao/playerResultDao', () => {
     };
 });
 
-describe('test update player handler', () => {
+describe('test remove player result handler', () => {
     const playerResultId = '123';
-    it('should save updated player result', () => {
-        const result = updatePlayerResult(playerResultId, createApiEvent('PUT'), createDynamoDbDataMapper());
+    it('should remove player result', () => {
+        const result = removePlayerResult(
+            createApiEvent('DELETE', '', { id: playerResultId }),
+            createDynamoDbDataMapper(),
+        );
         expect(result).resolves.toEqual({
             statusCode: 200,
             headers: RESPONSE_HEADERS,
-            body: JSON.stringify(createTestPlayerResult()),
+            body: JSON.stringify({ message: `player result id 123 removed` }),
         });
     });
     it('should return 404 when the provided player result id is not found', () => {
-        const result = updatePlayerResult(playerResultId, createApiEvent('PUT'), createDynamoDbDataMapper());
+        const result = removePlayerResult(
+            createApiEvent('DELETE', '', { id: playerResultId }),
+            createDynamoDbDataMapper(),
+        );
         expect(result).resolves.toEqual({
             statusCode: 404,
             headers: RESPONSE_HEADERS,
@@ -55,11 +53,14 @@ describe('test update player handler', () => {
         });
     });
     it('should return 500 upon server error', () => {
-        const result = updatePlayerResult(playerResultId, createApiEvent('PUT'), createDynamoDbDataMapper());
+        const result = removePlayerResult(
+            createApiEvent('DELETE', '', { id: playerResultId }),
+            createDynamoDbDataMapper(),
+        );
         expect(result).resolves.toEqual({
             statusCode: 500,
             headers: RESPONSE_HEADERS,
-            body: JSON.stringify({ error: 'internal server error' }),
+            body: JSON.stringify({ error: 'unable to remove player result id 123' }),
         });
     });
 });

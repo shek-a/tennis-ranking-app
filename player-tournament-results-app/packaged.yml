@@ -11,8 +11,8 @@ Resources:
   PlayerTournamentResultsApplication:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sheka-infra-test/tennis-app/18e0bbab6954cb9e4e95c9c64747176c
-      Handler: app.playerHandler
+      CodeUri: s3://sheka-infra-test/tennis-app/e25fc290e0403c0178139f0c57a3f992
+      Handler: app.playerResultsHandler
       Runtime: nodejs18.x
       Architectures:
       - x86_64
@@ -27,6 +27,26 @@ Resources:
           Properties:
             Path: /player-result/{id}
             Method: PUT
+        GetPlayerTournamentResult:
+          Type: Api
+          Properties:
+            Path: /player-result
+            Method: GET
+            RequestParameters:
+            - method.request.querystring.firstName:
+                Required: false
+                Caching: false
+            - method.request.querystring.lastName:
+                Required: false
+                Caching: false
+            - method.request.querystring.tournament:
+                Required: false
+                Caching: false
+        RemovePlayerTournamentResult:
+          Type: Api
+          Properties:
+            Path: /player-result/{id}
+            Method: DELETE
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
