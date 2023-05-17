@@ -10,6 +10,4 @@ services:
       - EDGE_PORT=4566
       - SERVICES=dynamodb
     volumes:
-      - ./local-stack-scripts/init.sh:/etc/localstack/init/ready.d/init.sh  
-
-
+      - ./local-stack-scripts/init.sh:/etc/localstack/init/ready.d/init.sh

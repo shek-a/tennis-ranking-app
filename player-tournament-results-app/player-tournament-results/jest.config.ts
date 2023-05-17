@@ -15,4 +15,5 @@ export default {
     moduleNameMapper: {
         '@/(.*)': '<rootDir>/src/$1',
     },
+    setupFiles: ['<rootDir>/jest/setEnvVars.ts'],
 };

@@ -1,10 +1,10 @@
 {
-  "name": "hello_world",
+  "name": "player tournament results app",
   "version": "1.0.0",
-  "description": "hello world sample for NodeJS",
+  "description": "player tournament results app",
   "main": "app.js",
   "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
-  "author": "SAM CLI",
+  "author": "Andrew Shek",
   "license": "MIT",
   "scripts": {
     "unit": "jest",

@@ -7,4 +7,10 @@ aws cloudformation deploy --template-file packaged.yml --stack-name player-tourn
 aws cloudformation validate-template --template-body file://template.yaml
 
 
-aws dynamodb describe-table --table-name player_tournament_results --endpoint-url=http://localhost:4566 
+sam local start-api --env-vars local-env.json
+sam local invoke PlayerTournamentResultsApplication --env-vars local-env.json -e events/put-player-result.json
+
+sam local invoke PlayerTournamentResultsApplication -e events/put-player-result.json
+
+
+sam local invoke getAllItemsFunction --event events/event-get-all-items.json

@@ -8,7 +8,7 @@ import updateResultPlayerHandler from '@/handler/updatePlayerResult';
 import { getApiResponse } from './common';
 
 export const playerResultsHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const client = new DynamoDb({ region: 'ap-southeast-2' });
+    const client = getDynamoDbClient();
     const mapper = new DataMapper({ client });
     switch (event.httpMethod) {
         case 'PUT':
@@ -23,4 +23,10 @@ export const playerResultsHandler = async (event: APIGatewayProxyEvent): Promise
         default:
             return getApiResponse(400, JSON.stringify({ error: 'invalid request' }));
     }
+};
+
+const getDynamoDbClient = (): DynamoDb => {
+    return process.env.DYNAMODB_ENDPOINT
+        ? new DynamoDb({ endpoint: process.env.DYNAMODB_ENDPOINT, region: 'ap-southeast-2' })
+        : new DynamoDb({ region: process.env.AWS_REGION });
 };
