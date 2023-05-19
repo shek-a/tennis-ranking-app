@@ -2,6 +2,7 @@ name: Deploy Tennis Rankings Application Stack
 on: workflow_dispatch
 jobs:
   deploy:
+    name: Deploy Tennis Rankings Application Stack 
     runs-on: ubuntu-latest
     steps:
       - name: Get code
