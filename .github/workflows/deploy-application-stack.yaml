@@ -23,6 +23,4 @@ jobs:
           s3-prefix: player-tournament-results
           has-api: 'true'
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY    
-
-
+        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
