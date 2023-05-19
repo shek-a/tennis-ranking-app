@@ -25,7 +25,7 @@ runs:
   steps:
       - name: Install dependencies
         run: |
-          cd ${{ inputs.folder_name }}/${{ inputs.application-name }}
+          cd ${{ inputs.folder-name }}/${{ inputs.application-name }}
           npm install
         shell: bash
       - name: Run tests
