@@ -54,5 +54,5 @@ runs:
         run: |
           APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
           API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${APP_API_CF_EXPORT_NAME}'].Value" --output text)
-          echo "api-url: ${API_URL}"
+          echo "api-url='${API_URL}'" >> $GITHUB_OUTPUT
         shell: bash  
