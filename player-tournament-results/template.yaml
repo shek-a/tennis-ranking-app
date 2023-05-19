@@ -12,7 +12,7 @@ Resources:
   PlayerTournamentResultsApplication:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: player-tournament-results/src/
+      CodeUri: player-tournament-results-app/src/
       Handler: app.playerResultsHandler
       Runtime: nodejs18.x
       Architectures:
