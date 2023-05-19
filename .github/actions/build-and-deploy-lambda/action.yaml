@@ -43,7 +43,9 @@ runs:
           sam package --s3-bucket ${{ inputs.s3-bucket }} --s3-prefix ${{ inputs.s3-prefix }} --output-template-file packaged.yml --template .aws-sam/build/template.yaml
         shell: bash  
       - name: Deploy
-        run: aws cloudformation deploy --template-file /home/runner/work/tennis-rankings-app/${{ inputs.folder-name }}/packaged.yml --stack-name ${{ inputs.folder-name }} --tags Product=tennis-rankings-app  --capabilities CAPABILITY_IAM   
+        run: |
+          cd ${{ inputs.folder-name }}
+          aws cloudformation deploy --template-file /home/runner/work/tennis-rankings-app/${{ inputs.folder-name }}/packaged.yml --stack-name ${{ inputs.folder-name }} --tags Product=tennis-rankings-app  --capabilities CAPABILITY_IAM   
         shell: bash
       - name: Get Api Gateway Url
         id: get-api-url
