@@ -15,7 +15,7 @@ inputs:
     required: true
   has-api:
     description: Does API Gateway expose Lambda APIs
-    default: false    
+    default: 'false'    
 outputs:
   api-url:
     description: url of api for API Gateway 
@@ -50,7 +50,7 @@ runs:
       #   shell: bash
       - name: Get Api Gateway Url
         id: get-api-url
-        if: inputs.has-api == true
+        if: inputs.has-api == 'true'
         run: |
           echo "hello"
           URL=$(aws cloudformation list-exports --query "Exports[?Name=='${{ inputs.application-name }}-api-url'].Value" --output text)
