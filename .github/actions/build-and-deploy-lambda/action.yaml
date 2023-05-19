@@ -53,6 +53,6 @@ runs:
         if: inputs.has-api == 'true'
         run: |
           APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
-          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='$APP_API_CF_EXPORT_NAME'].Value" --output text)
+          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${APP_API_CF_EXPORT_NAME}'].Value" --output text)
           echo "api-url: ${API_URL}""
         shell: bash  
