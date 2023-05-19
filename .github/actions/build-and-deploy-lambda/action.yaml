@@ -38,6 +38,7 @@ runs:
         shell: bash        
       - name: Build and Package
         run: |
+          cd ${{ inputs.folder-name }}
           sam build -t template.yaml
           sam package --s3-bucket ${{ inputs.s3-bucket }} --s3-prefix ${{ inputs.s3-prefix }} --output-template-file packaged.yml --template .aws-sam/build/template.yaml
         shell: bash  
