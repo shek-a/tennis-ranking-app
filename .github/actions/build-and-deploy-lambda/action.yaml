@@ -52,8 +52,7 @@ runs:
         id: get-api-url
         if: inputs.has-api == 'true'
         run: |
-          echo "hello"
-          URL=$(aws cloudformation list-exports --query "Exports[?Name=='${{ inputs.application-name }}-api-url'].Value" --output text)
-          echo "api-url: ${URL}""
-          echo "api-url='${URL}'" >> $GITHUB_OUTPUT
+          APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
+          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='$APP_API_CF_EXPORT_NAME'].Value" --output text)
+          echo "api-url: ${API_URL}""
         shell: bash  
