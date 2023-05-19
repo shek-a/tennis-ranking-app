@@ -20,7 +20,7 @@ jobs:
           folder-name: player-tournament-results
           s3-bucket: sheka-infra-test
           s3-prefix: player-tournament-results
-          has-api: true
+          has-api: 'true'
       - name: Create Build Summary  
         run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY    
 
