@@ -51,8 +51,6 @@ Resources:
         - AttributeName: lastName
           KeyType: RANGE          
       AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S      
         - AttributeName: firstName
           AttributeType: S
         - AttributeName: lastName
