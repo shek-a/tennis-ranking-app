@@ -18,18 +18,11 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        GetPlayerRanking:
-          Type: Api
+        PlayerTournamentResultsTable:
+          Type: DynamoDB
           Properties:
-            Path: /player-rankings
-            Method: GET      
-            RequestParameters:
-              - method.request.querystring.firstName:
-                  Required: false
-                  Caching: false
-              - method.request.querystring.lastName:
-                  Required: false
-                  Caching: false                                                                          
+            Stream: !ImportValue
+            StartingPosition: LATEST                                                           
       Policies:    
       - DynamoDBCrudPolicy:
           TableName: !Ref PlayerRankingsTable      

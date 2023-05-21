@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import DynamoDb from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import getPlayerRankingsHandler from '@/handler/getPlayerRankings';
 import { getApiResponse } from './common';
 
 export const tournamentResultsProcessorHandler = async (
