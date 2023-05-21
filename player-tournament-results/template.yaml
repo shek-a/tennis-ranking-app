@@ -112,3 +112,5 @@ Outputs:
   PlayerTournamentResultsTableStreamArn:
     Description: Arn of the Player Tournament Results DynamoDB Table Stream
     Value: !GetAtt PlayerTournamentResultsTable.StreamArn
+    Export:
+      Name: "player-tournament-results-table-stream-arn"
