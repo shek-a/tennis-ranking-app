@@ -21,14 +21,14 @@ Resources:
         PlayerTournamentResultsTable:
           Type: DynamoDB
           Properties:
-            Stream: !ImportValue player-tournament-results-table-stream-arn
+            Stream: !ImportValue player-tournament-results-dynamoDB-stream-arn
             StartingPosition: LATEST                                                           
       Policies:    
       - DynamoDBCrudPolicy:
-          TableName: !ImportValue player-rankings-dynamoDB-arn 
+          TableName: player_rankings
       - DynamoDBStreamReadPolicy:
-          TableName: !importValue
-          StreamName: !ImportValue player-tournament-results-table-stream-arn
+          TableName: player_tournament_results
+          StreamName: !Select [3, !Split ["/", !ImportValue player-tournament-results-dynamoDB-stream-arn]]
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
