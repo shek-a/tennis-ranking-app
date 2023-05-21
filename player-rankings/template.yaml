@@ -72,6 +72,6 @@ Outputs:
     Value: !GetAtt PlayerRakingsApplicationRole.Arn
   PlayerRakingsTableStreamArn:
     Description: Arn of the Player Rankings DynamoDB Table
-    Value: !GetAtt PlayerTournamentResultsTable.Arn
+    Value: !GetAtt PlayerRankingsTable.Arn
     Export:
       Name: "player-rankings-dynamoDB-arn"
