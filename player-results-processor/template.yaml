@@ -9,11 +9,11 @@ Globals:
     TracingEnabled: true
     
 Resources:
-  PlayerRankingsApplication:
+  PlayerRankingsProcessorApplication:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: tournament-results-processor-app/src/
-      Handler: app.tournamentResultsProcessorHandler
+      CodeUri: player-results-processor-app/src/
+      Handler: app.playerResultsProcessorHandler
       Runtime: nodejs18.x
       Architectures:
       - x86_64
@@ -21,11 +21,14 @@ Resources:
         PlayerTournamentResultsTable:
           Type: DynamoDB
           Properties:
-            Stream: !ImportValue
+            Stream: !ImportValue player-tournament-results-table-stream-arn
             StartingPosition: LATEST                                                           
       Policies:    
       - DynamoDBCrudPolicy:
-          TableName: !Ref PlayerRankingsTable      
+          TableName: !ImportValue player-rankings-dynamoDB-arn 
+      - DynamoDBStreamReadPolicy:
+          TableName: !importValue
+          StreamName: !ImportValue player-tournament-results-table-stream-arn
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -35,9 +38,9 @@ Resources:
         EntryPoints:
         - app.ts
 Outputs:
-  PlayerRankingsApplication:
-    Description: Player Tournament Rankings Application Lambda ARN
-    Value: !GetAtt PlayerRankingsApplication.Arn
-  PlayerRankingsApplicationIamRole:
+  PlayerRankingsProcessorApplication:
+    Description: Player Rankings Processor Application Lambda ARN
+    Value: !GetAtt PlayerRankingsProcessorApplication.Arn
+  PlayerRankingsProcessorApplicationIamRole:
     Description: Implicit IAM Role created for Player Rankings Application Lambda
-    Value: !GetAtt PlayerRankingsApplicationRole.Arn
+    Value: !GetAtt PlayerRankingsProcessorApplicationRole.Arn

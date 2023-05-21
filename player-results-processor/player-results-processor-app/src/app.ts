@@ -3,15 +3,9 @@ import DynamoDb from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { getApiResponse } from './common';
 
-export const tournamentResultsProcessorHandler = async (
-    event: APIGatewayProxyEvent,
-): Promise<APIGatewayProxyResult> => {
+export const playerResultsProcessorHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const client = getDynamoDbClient();
     const mapper = new DataMapper({ client });
-
-    if (event.httpMethod === 'GET') {
-        return getPlayerRankingsHandler(event, mapper);
-    }
 
     return getApiResponse(400, JSON.stringify({ error: 'invalid request' }));
 };

@@ -1,7 +1,7 @@
 {
-  "name": "tournament-results-processor-app",
+  "name": "player-results-processor-app",
   "version": "1.0.0",
-  "description": "Tournament results processor App",
+  "description": "Player Results Processor App",
   "main": "app.js",
   "repository": "https://github.com/shek-a/tennis-ranking-app",
   "author": "Andrew Shek",
