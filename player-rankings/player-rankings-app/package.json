@@ -1,7 +1,7 @@
 {
-  "name": "player-tournament-results-app",
+  "name": "player-rankings-app",
   "version": "1.0.0",
-  "description": "Player Tournament Results App",
+  "description": "Player Rankings App",
   "main": "app.js",
   "repository": "https://github.com/shek-a/tennis-ranking-app",
   "author": "Andrew Shek",
@@ -21,8 +21,7 @@
     "esbuild": "^0.14.14",
     "i": "^0.3.7",
     "npm": "^9.6.6",
-    "winston": "^3.8.2",
-    "yup": "^1.1.1"
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92",
