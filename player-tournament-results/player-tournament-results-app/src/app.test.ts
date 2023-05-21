@@ -51,8 +51,8 @@ jest.mock('@/handler/removePlayerResult', () => {
     };
 });
 
-describe('test player handler', () => {
-    it('should call put player handler when no id path parameter is supplied on PUT call', () => {
+describe('test player results handler', () => {
+    it('should call put player handler when no id path parameter is supplied on a PUT call', () => {
         const event = createApiEvent('PUT');
 
         const result = playerResultsHandler(event);
@@ -62,7 +62,7 @@ describe('test player handler', () => {
         });
     });
 
-    it('should call update player handler when id path parameter is supplied on PUT call', () => {
+    it('should call update player handler when id path parameter is supplied on a PUT call', () => {
         const event = createApiEvent('PUT', '', { id: '123' });
 
         const result = playerResultsHandler(event);
@@ -72,7 +72,7 @@ describe('test player handler', () => {
         });
     });
 
-    it('should call get player handler when id path parameter is supplied on GET call', () => {
+    it('should call get player handler on a GET call', () => {
         const event = createApiEvent('GET');
 
         const result = playerResultsHandler(event);
@@ -82,7 +82,7 @@ describe('test player handler', () => {
         });
     });
 
-    it('should call remove player handler when id path parameter is supplied on DELETE call', () => {
+    it('should call remove player handler when id path parameter is supplied on a DELETE call', () => {
         const event = createApiEvent('DELETE');
 
         const result = playerResultsHandler(event);
