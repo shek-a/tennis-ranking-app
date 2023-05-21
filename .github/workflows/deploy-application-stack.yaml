@@ -1,8 +1,8 @@
 name: Deploy Tennis Rankings Application Stack
 on: workflow_dispatch
 jobs:
-  deploy:
-    name: Deploy Tennis Rankings Application Stack 
+  deploy-player-tournament-results-app:
+    name: Deploy Player Tournament Results Application
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -21,7 +21,21 @@ jobs:
           folder-name: player-tournament-results
           s3-bucket: sheka-infra-test
           s3-prefix: player-tournament-results
-          has-api: 'true'
+          has-api: 'true'       
+      - name: Create Build Summary  
+        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+  deploy-player-rankings-app:
+    name: Deploy Player Rankings Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}        
       - name: Deploy player rankings app
         id: deploy-player-rankings-app
         uses: ./.github/actions/build-and-deploy-lambda
@@ -32,4 +46,4 @@ jobs:
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY        
