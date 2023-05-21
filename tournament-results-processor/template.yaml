@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Tournament Rankings Processor Application Lambda and DynamoDb
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+    
+Resources:
+  PlayerRankingsApplication:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: tournament-results-processor-app/src/
+      Handler: app.tournamentResultsProcessorHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        GetPlayerRanking:
+          Type: Api
+          Properties:
+            Path: /player-rankings
+            Method: GET      
+            RequestParameters:
+              - method.request.querystring.firstName:
+                  Required: false
+                  Caching: false
+              - method.request.querystring.lastName:
+                  Required: false
+                  Caching: false                                                                          
+      Policies:    
+      - DynamoDBCrudPolicy:
+          TableName: !Ref PlayerRankingsTable      
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - app.ts
+Outputs:
+  PlayerRankingsApplication:
+    Description: Player Tournament Rankings Application Lambda ARN
+    Value: !GetAtt PlayerRankingsApplication.Arn
+  PlayerRankingsApplicationIamRole:
+    Description: Implicit IAM Role created for Player Rankings Application Lambda
+    Value: !GetAtt PlayerRankingsApplicationRole.Arn
