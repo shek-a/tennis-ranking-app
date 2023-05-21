@@ -96,7 +96,7 @@ Resources:
             ProjectionType: ALL                        
       BillingMode: PAY_PER_REQUEST  
       StreamSpecification:
-        StreamViewType: NEW_IMAGE
+        StreamViewType: NEW_AND_OLD_IMAGES
 Outputs:
   PlayerTournamentResultsApplicationUri:
     Description: API Gateway endpoint URL for Prod stage for Player Tournament Results Application
