@@ -3,10 +3,10 @@ import { PLAYER_RANKINGS_TABLE_NAME } from '@/constants';
 
 @table(PLAYER_RANKINGS_TABLE_NAME)
 export default class PlayerRanking {
-    @hashKey()
+    @hashKey({ type: 'String' })
     firstName!: string;
 
-    @rangeKey()
+    @rangeKey({ type: 'String' })
     lastName!: string;
 
     @attribute()
