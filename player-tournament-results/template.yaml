@@ -110,7 +110,7 @@ Outputs:
     Description: Implicit IAM Role created for Player Tournament Results Application Lambda
     Value: !GetAtt PlayerTournamentResultsApplicationRole.Arn
   PlayerTournamentResultsTableArn:
-    Description: Arn of the Player Rankings DynamoDB Table
+    Description: Arn of the Player Tournament Results DynamoDB Table
     Value: !GetAtt PlayerTournamentResultsTable.Arn
     Export:
       Name: "player-tournament-results-dynamoDB-arn"        
