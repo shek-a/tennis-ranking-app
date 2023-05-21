@@ -61,7 +61,7 @@ Outputs:
     Description: API Gateway endpoint URL for Prod stage for Player Rankings Application
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/player-rankings"
     Export:
-      Name: "player-tournament-rankings-api-url"
+      Name: "player-rankings-app-api-url"
   PlayerRankingsApplication:
     Description: Player Tournament Rankings Application Lambda ARN
     Value: !GetAtt PlayerRankingsApplication.Arn
