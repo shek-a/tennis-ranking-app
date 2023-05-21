@@ -68,7 +68,7 @@ Outputs:
   PlayerRankingsApplicationIamRole:
     Description: Implicit IAM Role created for Player Rankings Application Lambda
     Value: !GetAtt PlayerRankingsApplicationRole.Arn
-  PlayerRakingsTableStreamArn:
+  PlayerRakingsTableArn:
     Description: Arn of the Player Rankings DynamoDB Table
     Value: !GetAtt PlayerRankingsTable.Arn
     Export:
