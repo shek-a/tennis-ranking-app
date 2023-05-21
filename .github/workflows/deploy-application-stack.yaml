@@ -13,14 +13,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}        
-      - name: Deploy player tournament results app
-        id: deploy-player-tournament-results-app
+      # - name: Deploy player tournament results app
+      #   id: deploy-player-tournament-results-app
+      #   uses: ./.github/actions/build-and-deploy-lambda
+      #   with:
+      #     application-name: player-tournament-results-app
+      #     folder-name: player-tournament-results
+      #     s3-bucket: sheka-infra-test
+      #     s3-prefix: player-tournament-results
+      #     has-api: 'true'
+      - name: Deploy player rankings app
+        id: deploy-player-rankings-app
         uses: ./.github/actions/build-and-deploy-lambda
         with:
-          application-name: player-tournament-results-app
-          folder-name: player-tournament-results
+          application-name: player-rankings-app
+          folder-name: player-rankings
           s3-bucket: sheka-infra-test
-          s3-prefix: player-tournament-results
-          has-api: 'true'
+          s3-prefix: player-rankings
+          has-api: 'true'          
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY

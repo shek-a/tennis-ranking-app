@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Player Tournament Rankings Application Lambda and DynamoDb
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+    
+Resources:
+  PlayerRankingsApplication:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: player-rankings-app/src/
+      Handler: app.playerRankingsHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        GetPlayerRanking:
+          Type: Api
+          Properties:
+            Path: /player-rankings
+            Method: GET      
+            RequestParameters:
+              - method.request.querystring.firstName:
+                  Required: false
+                  Caching: false
+              - method.request.querystring.lastName:
+                  Required: false
+                  Caching: false                                                                          
+      Policies:    
+      - DynamoDBCrudPolicy:
+          TableName: !Ref PlayerRankingsTable      
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - app.ts
+  PlayerRankingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "player_rankings"
+      KeySchema:
+        - AttributeName: firstName
+          KeyType: HASH
+        - AttributeName: lastName
+          KeyType: RANGE          
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S      
+        - AttributeName: firstName
+          AttributeType: S
+        - AttributeName: lastName
+          AttributeType: S                             
+      BillingMode: PAY_PER_REQUEST  
+Outputs:
+  PlayerRankingsApplicationUri:
+    Description: API Gateway endpoint URL for Prod stage for Player Rankings Application
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/player-rankings"
+    Export:
+      Name: "player-tournament-rankings-api-url"
+  PlayerRankingsApplication:
+    Description: Player Tournament Rankings Application Lambda ARN
+    Value: !GetAtt PlayerRankingsApplication.Arn
+  PlayerRankingsApplicationIamRole:
+    Description: Implicit IAM Role created for Player Rankings Application Lambda
+    Value: !GetAtt PlayerRakingsApplicationRole.Arn
+  PlayerRakingsTableStreamArn:
+    Description: Arn of the Player Rankings DynamoDB Table
+    Value: !GetAtt PlayerTournamentResultsTable.Arn
+    Export:
+      Name: "player-rankings-dynamoDB-arn"
