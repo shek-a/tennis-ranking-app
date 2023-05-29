@@ -1,22 +1,17 @@
+import logger from '@/logger';
 import PlayerRanking from '@/model/PlayerRanking';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import { ConditionExpression } from '@aws/dynamodb-expressions';
 
-export const getAllPlayerRankings = async (dataMapper: DataMapper): Promise<Array<PlayerRanking>> => {
-    const playerRankings: Array<PlayerRanking> = [];
-    for await (const playerRanking of dataMapper.scan(PlayerRanking)) {
-        playerRankings.push(playerRanking);
-    }
-    return playerRankings;
+export const put = (playerResult: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {
+    logger.info(`Saving player ranking into DynamoDB.`);
+    return dataMapper.put(playerResult);
 };
 
-export const getFilteredPlayerRankings = async (
-    condition: ConditionExpression,
-    dataMapper: DataMapper,
-): Promise<Array<PlayerRanking>> => {
-    const playerRankings: Array<PlayerRanking> = [];
-    for await (const playerRanking of dataMapper.scan(PlayerRanking, { filter: condition })) {
-        playerRankings.push(playerRanking);
-    }
-    return playerRankings;
+export const get = (playerResult: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {
+    return dataMapper.get(playerResult);
+};
+
+export const update = (playerResult: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {
+    logger.info(`Update player rankings for player ${playerResult.firstName} ${playerResult.lastName}`);
+    return dataMapper.update(playerResult);
 };

@@ -1,39 +1,27 @@
 import { expect, describe, it, jest } from '@jest/globals';
-import { playerRankingsHandler } from './app';
-import { createApiEvent } from './testUtils';
-import { RESPONSE_HEADERS } from './constants';
+import { playerResultsProcessorHandler } from './app';
+import { createDynamoDBStreamEvent } from './testUtils';
+import processInsertPlayerResult from './service/processInsertPlayerResult';
+import processModifyPlayerResult from './service/processModifyPlayerResult';
+import processRemovePlayerResult from './service/processRemovePlayerResult';
 
-jest.mock('@/handler/getPlayerRankings', () => {
-    return {
-        __esModule: true,
-        default: jest.fn().mockImplementation(() => {
-            return {
-                statusCode: 200,
-                body: 'success get player rankings response',
-            };
-        }),
-    };
-});
+jest.mock('@/service/processInsertPlayerResult');
+jest.mock('@/service/processModifyPlayerResult');
+jest.mock('@/service/processRemovePlayerResult');
 
-describe('test player rankings handler', () => {
-    it('should call get player raking handler on a GET call', () => {
-        const event = createApiEvent('GET');
-
-        const result = playerRankingsHandler(event);
-        expect(result).resolves.toEqual({
-            statusCode: 200,
-            body: 'success get player rankings response',
-        });
+describe('test player results processor handler', () => {
+    it('should call process insert player result service on a INSERT event', async () => {
+        await playerResultsProcessorHandler(createDynamoDBStreamEvent('INSERT', 'Roger', 'Federer'));
+        expect(processInsertPlayerResult).toHaveBeenCalled();
     });
 
-    it('should return 400 upon receivng a invalid request', () => {
-        const event = createApiEvent('/DELETE');
+    it('should call process modify player result service on a MODIFY event', async () => {
+        await playerResultsProcessorHandler(createDynamoDBStreamEvent('MODIFY', 'Roger', 'Federer'));
+        expect(processModifyPlayerResult).toHaveBeenCalled();
+    });
 
-        const result = playerRankingsHandler(event);
-        expect(result).resolves.toEqual({
-            statusCode: 400,
-            headers: RESPONSE_HEADERS,
-            body: JSON.stringify({ error: 'invalid request' }),
-        });
+    it('should call process remove player result service on a REMOVE event', async () => {
+        await playerResultsProcessorHandler(createDynamoDBStreamEvent('REMOVE', 'Roger', 'Federer'));
+        expect(processRemovePlayerResult).toHaveBeenCalled();
     });
 });
