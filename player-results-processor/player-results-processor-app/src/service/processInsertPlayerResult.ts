@@ -2,7 +2,7 @@ import { get, put, update } from '@/dao/playerRankingDao';
 
 import logger from '@/logger';
 import PlayerRanking from '@/model/PlayerRanking';
-import { DataMapper, ItemNotFoundException } from '@aws/dynamodb-data-mapper';
+import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { DynamoDBRecord } from 'aws-lambda';
 
 export default (record: DynamoDBRecord, dataMapper: DataMapper): void => {
@@ -10,8 +10,6 @@ export default (record: DynamoDBRecord, dataMapper: DataMapper): void => {
     const lastName = record.dynamodb?.NewImage?.lastName.S;
     const dateOfBirth = record.dynamodb?.NewImage?.dateOfBirth.S;
     const points = record.dynamodb?.NewImage?.points.N;
-
-    console.log('insert test');
 
     if (firstName && lastName && dateOfBirth && points) {
         processInsertPlayerResult(firstName, lastName, dateOfBirth, +points, dataMapper);

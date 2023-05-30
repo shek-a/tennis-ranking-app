@@ -1,4 +1,4 @@
-import { beforeEach, expect, describe, it, jest } from '@jest/globals';
+import { expect, describe, it, jest } from '@jest/globals';
 import { DataMapper, ItemNotFoundException } from '@aws/dynamodb-data-mapper';
 import { createDynamoDBRecord, createDynamoDbDataMapper, createPlayerRanking } from '../testUtils';
 import PlayerRanking from '../model/PlayerRanking';
@@ -8,12 +8,9 @@ import { get, update, put } from '../dao/playerRankingDao';
 jest.mock('@/dao/playerRankingDao');
 
 describe('should process insert player result', () => {
-    beforeEach(() => {
-        jest.resetAllMocks();
-    });
+    const mockedGet = <jest.Mock<typeof get>>get;
 
     it('should update existing player result record when player result is found', async () => {
-        const mockedGet = <jest.Mock<typeof get>>get;
         mockedGet.mockReturnValue(Promise.resolve(createPlayerRanking('Roger', 'Federer', '1980-02-16', 10000)));
         await processInsertPlayerResult(createDynamoDBRecord('INSERT', 'Roger', 'Federer'), createDynamoDbDataMapper());
 
@@ -28,7 +25,6 @@ describe('should process insert player result', () => {
     });
 
     it('should create existing player result record when player result is not found', async () => {
-        const mockedGet = <jest.Mock<typeof get>>get;
         mockedGet.mockImplementation(() => {
             throw ItemNotFoundException;
         });

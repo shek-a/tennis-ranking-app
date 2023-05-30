@@ -9,6 +9,7 @@ describe('test player rankings handler', () => {
     let dataMapper: DataMapper;
     let player1: PlayerRanking;
     let player2: PlayerRanking;
+
     beforeAll(() => {
         const client = new DynamoDb({ endpoint: process.env.DYNAMODB_ENDPOINT, region: 'ap-southeast-2' });
         dataMapper = new DataMapper({ client });
@@ -32,6 +33,7 @@ describe('test player rankings handler', () => {
         const event = createApiEvent('GET');
 
         const result = await playerRankingsHandler(event);
+
         expect(result.statusCode).toBe(200);
         expect(JSON.parse(result.body).length).toBe(2);
     });
@@ -43,6 +45,7 @@ describe('test player rankings handler', () => {
         });
 
         const result = await playerRankingsHandler(event);
+
         expect(result.statusCode).toBe(200);
         expect(JSON.parse(result.body).length).toBe(1);
     });
