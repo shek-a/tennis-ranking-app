@@ -3,6 +3,10 @@ import { createApiEvent, createDynamoDbDataMapper, createPlayerRanking } from '.
 import PlayerResult from '../model/PlayerRanking';
 import getPlayerRankings from './getPlayerRankings';
 import { RESPONSE_HEADERS } from '../constants';
+import { getAllPlayerRankings, getFilteredPlayerRankings } from '../dao/playerRankingDao';
+import { DataMapper } from '@aws/dynamodb-data-mapper';
+
+jest.mock('@/dao/playerRankingDao');
 
 jest.mock('@/dao/playerRankingDao', () => {
     return {
@@ -26,16 +30,30 @@ jest.mock('@/dao/playerRankingDao', () => {
 });
 
 describe('test get player rankings handler with no query string parameters', () => {
-    it('should get player ranking', () => {
-        const result = getPlayerRankings(createApiEvent('GET'), createDynamoDbDataMapper());
-        expect(result).resolves.toEqual({
+    const mockedGetAllPlayerRankings = <jest.Mock<typeof getAllPlayerRankings>>getAllPlayerRankings;
+    const mockedGetFilteredPlayerRankings = <jest.Mock<typeof getFilteredPlayerRankings>>getFilteredPlayerRankings;
+
+    it('should get all player rankings', async () => {
+        mockedGetAllPlayerRankings.mockReturnValue(Promise.resolve(createTestGetAllPlayerRankings()));
+
+        const result = await getPlayerRankings(createApiEvent('GET'), createDynamoDbDataMapper());
+
+        expect(result).toEqual({
             statusCode: 200,
             headers: RESPONSE_HEADERS,
             body: JSON.stringify(createTestGetAllPlayerRankings()),
         });
+        expect(mockedGetAllPlayerRankings).toHaveBeenCalledWith(expect.any(DataMapper));
+        expect(mockedGetFilteredPlayerRankings).not.toHaveBeenCalled();
     });
+
     it('should return 500 upon server error', () => {
+        mockedGetAllPlayerRankings.mockImplementationOnce(() => {
+            throw new Error('internal server error');
+        });
+
         const result = getPlayerRankings(createApiEvent('GET'), createDynamoDbDataMapper());
+
         expect(result).resolves.toEqual({
             statusCode: 500,
             headers: RESPONSE_HEADERS,
@@ -45,21 +63,34 @@ describe('test get player rankings handler with no query string parameters', () 
 });
 
 describe('test get player rankings handler with query string parameters', () => {
-    it('should get player ranking', () => {
-        const result = getPlayerRankings(
+    const mockedGetAllPlayerRankings = <jest.Mock<typeof getAllPlayerRankings>>getAllPlayerRankings;
+    const mockedGetFilteredPlayerRankings = <jest.Mock<typeof getFilteredPlayerRankings>>getFilteredPlayerRankings;
+
+    it('should get filtered player rankings', async () => {
+        mockedGetFilteredPlayerRankings.mockReturnValue(Promise.resolve(createTestFilteredPlayerRankings()));
+
+        const result = await getPlayerRankings(
             createApiEvent('GET', {
                 firstName: 'Novak',
                 lastName: 'Djokovic',
             }),
             createDynamoDbDataMapper(),
         );
-        expect(result).resolves.toEqual({
+
+        expect(result).toEqual({
             statusCode: 200,
             headers: RESPONSE_HEADERS,
             body: JSON.stringify(createTestFilteredPlayerRankings()),
         });
+        expect(mockedGetFilteredPlayerRankings).toHaveBeenCalled();
+        expect(mockedGetAllPlayerRankings).not.toHaveBeenCalled();
     });
+
     it('should return 500 upon server error', () => {
+        mockedGetFilteredPlayerRankings.mockImplementationOnce(() => {
+            throw new Error('internal server error');
+        });
+
         const result = getPlayerRankings(
             createApiEvent('GET', {
                 firstName: 'Novak',
@@ -67,6 +98,7 @@ describe('test get player rankings handler with query string parameters', () => 
             }),
             createDynamoDbDataMapper(),
         );
+
         expect(result).resolves.toEqual({
             statusCode: 500,
             headers: RESPONSE_HEADERS,

@@ -8,6 +8,7 @@ import { playerResultsProcessorHandler } from './app';
 describe('test player results processor handler', () => {
     let dataMapper: DataMapper;
     let player1: PlayerRanking;
+
     beforeAll(() => {
         const client = new DynamoDb({ endpoint: process.env.DYNAMODB_ENDPOINT, region: 'ap-southeast-2' });
         dataMapper = new DataMapper({ client });
@@ -39,6 +40,7 @@ describe('test player results processor handler', () => {
         await delay(100);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
+
         assertPlayerRanking(playerRanking, 'Roger', 'Federer', 5000);
     });
 
@@ -47,6 +49,7 @@ describe('test player results processor handler', () => {
         await delay(100);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
+
         assertPlayerRanking(playerRanking, 'Roger', 'Federer', 1400);
     });
 
@@ -55,6 +58,7 @@ describe('test player results processor handler', () => {
         await delay(100);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
+
         assertPlayerRanking(playerRanking, 'Roger', 'Federer', -1600);
     });
 });

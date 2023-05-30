@@ -9,6 +9,7 @@ describe('test player results handler', () => {
     let dataMapper: DataMapper;
     let player1: PlayerResult;
     let player2: PlayerResult;
+
     beforeAll(() => {
         const client = new DynamoDb({ endpoint: process.env.DYNAMODB_ENDPOINT, region: 'ap-southeast-2' });
         dataMapper = new DataMapper({ client });
@@ -31,10 +32,12 @@ describe('test player results handler', () => {
         );
 
         const result = await playerResultsHandler(event);
+
         expect(result.statusCode).toBe(201);
 
         const playerId = JSON.parse(result.body).id;
-        const playerResults = await getPlayerResults();
+        const playerResults = await getPlayerResults(dataMapper);
+
         expect(playerResults.length).toBe(3);
 
         dataMapper.delete(Object.assign(new PlayerResult(), { id: playerId }));
@@ -44,6 +47,7 @@ describe('test player results handler', () => {
         const event = createApiEvent('GET');
 
         const result = await playerResultsHandler(event);
+
         expect(result.statusCode).toBe(200);
         expect(JSON.parse(result.body).length).toBe(2);
     });
@@ -59,6 +63,7 @@ describe('test player results handler', () => {
         );
 
         const result = await playerResultsHandler(event);
+
         expect(result.statusCode).toBe(200);
         expect(JSON.parse(result.body).length).toBe(1);
     });
@@ -67,16 +72,16 @@ describe('test player results handler', () => {
         const event = createApiEvent('PUT', JSON.stringify({ points: 5000 }), { id: player1.id });
 
         const result = await playerResultsHandler(event);
-        expect(result.statusCode).toBe(200);
 
+        expect(result.statusCode).toBe(200);
         expect(JSON.parse(result.body).points).toBe(5000);
     });
-
-    const getPlayerResults = async (): Promise<Array<PlayerResult>> => {
-        const playerResults: Array<PlayerResult> = [];
-        for await (const playerResult of dataMapper.scan(PlayerResult)) {
-            playerResults.push(playerResult);
-        }
-        return playerResults;
-    };
 });
+
+const getPlayerResults = async (dataMapper: DataMapper): Promise<Array<PlayerResult>> => {
+    const playerResults: Array<PlayerResult> = [];
+    for await (const playerResult of dataMapper.scan(PlayerResult)) {
+        playerResults.push(playerResult);
+    }
+    return playerResults;
+};

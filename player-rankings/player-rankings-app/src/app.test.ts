@@ -2,21 +2,20 @@ import { expect, describe, it, jest } from '@jest/globals';
 import { playerRankingsHandler } from './app';
 import { createApiEvent } from './testUtils';
 import { RESPONSE_HEADERS } from './constants';
+import getPlayerRankingsHandler from './handler/getPlayerRankings';
 
-jest.mock('@/handler/getPlayerRankings', () => {
-    return {
-        __esModule: true,
-        default: jest.fn().mockImplementation(() => {
-            return {
-                statusCode: 200,
-                body: 'success get player rankings response',
-            };
-        }),
-    };
-});
+jest.mock('@/handler/getPlayerRankings');
 
 describe('test player rankings handler', () => {
     it('should call get player raking handler on a GET call', () => {
+        const mockedGetPlayerRankingsHandler = <jest.Mock<typeof getPlayerRankingsHandler>>getPlayerRankingsHandler;
+        mockedGetPlayerRankingsHandler.mockReturnValue(
+            Promise.resolve({
+                statusCode: 200,
+                body: 'success get player rankings response',
+            }),
+        );
+
         const event = createApiEvent('GET');
 
         const result = playerRankingsHandler(event);
