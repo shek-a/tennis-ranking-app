@@ -22,12 +22,12 @@ describe('test player results processor handler', () => {
         dataMapper.delete(
             Object.assign(new PlayerRanking(), { firstName: player1.firstName, lastName: player1.lastName }),
         );
-        await delay(100);
+        await delay(200);
     });
 
     it('should create new player ranking ranking record on a INSERT event', async () => {
         await playerResultsProcessorHandler(createDynamoDBStreamEvent('INSERT', 'Rafa', 'Nadal'));
-        await delay(100);
+        await delay(200);
 
         const playerRanking = await getPlayerRanking('Rafa', 'Nadal', dataMapper);
         assertPlayerRanking(playerRanking, 'Rafa', 'Nadal', 3000);
@@ -37,7 +37,7 @@ describe('test player results processor handler', () => {
 
     it('should update new player ranking ranking record with points on a INSERT event', async () => {
         await playerResultsProcessorHandler(createDynamoDBStreamEvent('INSERT', 'Roger', 'Federer'));
-        await delay(100);
+        await delay(200);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
 
@@ -46,7 +46,7 @@ describe('test player results processor handler', () => {
 
     it('should update new player ranking ranking record with points on a MODIFY event', async () => {
         await playerResultsProcessorHandler(createDynamoDBStreamEvent('MODIFY', 'Roger', 'Federer'));
-        await delay(100);
+        await delay(200);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
 
@@ -55,7 +55,7 @@ describe('test player results processor handler', () => {
 
     it('should update new player ranking ranking record with points on a REMOVE event', async () => {
         await playerResultsProcessorHandler(createDynamoDBStreamEvent('REMOVE', 'Roger', 'Federer'));
-        await delay(100);
+        await delay(200);
 
         const playerRanking = await getPlayerRanking('Roger', 'Federer', dataMapper);
 
