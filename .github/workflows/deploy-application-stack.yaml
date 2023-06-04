@@ -46,4 +46,26 @@ jobs:
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY        
+        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+  deploy-player-results-processor-app:
+    needs: [deploy-player-tournament-results-app, deploy-player-rankings-app]
+    name: Deploy Player Results Processor Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}        
+      - name: Deploy player results processor app
+        id: deploy-player-results-processor-app
+        uses: ./.github/actions/build-and-deploy-lambda
+        with:
+          application-name: player-results-processor-app
+          folder-name: player-results-processor
+          s3-bucket: sheka-infra-test
+          s3-prefix: player-results-processor
+          has-api: 'false'                               
