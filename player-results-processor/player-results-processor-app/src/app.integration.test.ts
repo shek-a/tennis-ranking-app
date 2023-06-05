@@ -30,6 +30,7 @@ describe('test player results processor handler', () => {
         await delay(200);
 
         const playerRanking = await getPlayerRanking('Rafa', 'Nadal', dataMapper);
+
         assertPlayerRanking(playerRanking, 'Rafa', 'Nadal', 3000);
 
         dataMapper.delete(Object.assign(new PlayerRanking(), { firstName: 'Rafa', lastName: 'Nadal' }));

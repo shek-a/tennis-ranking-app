@@ -5,14 +5,14 @@ import PlayerRanking from '@/model/PlayerRanking';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { DynamoDBRecord } from 'aws-lambda';
 
-export default (record: DynamoDBRecord, dataMapper: DataMapper): void => {
+export default async (record: DynamoDBRecord, dataMapper: DataMapper): Promise<void> => {
     const firstName = record.dynamodb?.NewImage?.firstName.S;
     const lastName = record.dynamodb?.NewImage?.lastName.S;
     const dateOfBirth = record.dynamodb?.NewImage?.dateOfBirth.S;
     const points = record.dynamodb?.NewImage?.points.N;
 
     if (firstName && lastName && dateOfBirth && points) {
-        processInsertPlayerResult(firstName, lastName, dateOfBirth, +points, dataMapper);
+        await processInsertPlayerResult(firstName, lastName, dateOfBirth, +points, dataMapper);
     } else {
         logger.error(`error processing DynamoDB record ${record.eventID}`);
     }
@@ -33,7 +33,7 @@ const processInsertPlayerResult = async (
         playerRanking = await get(playerRanking, dataMapper);
     } catch (e: unknown) {
         logger.info(`inserting player ranking record for ${firstName} ${lastName}`);
-        addPlayerRanking(firstName, lastName, dateOfBirth, points, dataMapper);
+        await addPlayerRanking(firstName, lastName, dateOfBirth, points, dataMapper);
         return;
     }
 
