@@ -28,11 +28,9 @@ const processInsertPlayerResult = async (
     let playerRanking = new PlayerRanking();
     playerRanking.firstName = firstName;
     playerRanking.lastName = lastName;
-    console.log('processInsertPlayerResult function');
+
     try {
         playerRanking = await get(playerRanking, dataMapper);
-        console.log('get player ranking success');
-        console.log(playerRanking);
     } catch (e: unknown) {
         logger.info(`inserting player ranking record for ${firstName} ${lastName}`);
         await addPlayerRanking(firstName, lastName, dateOfBirth, points, dataMapper);
