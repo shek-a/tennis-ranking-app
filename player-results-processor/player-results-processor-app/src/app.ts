@@ -10,13 +10,15 @@ export const playerResultsProcessorHandler = async (event: DynamoDBStreamEvent) 
     const client = getDynamoDbClient();
     const mapper = new DataMapper({ client });
 
-    event.Records.forEach((record) => processResultRecord(record, mapper));
+    // event.Records.forEach(async (record) => await processResultRecord(record, mapper));
+    for (const record of event.Records) {
+        await processResultRecord(record, mapper);
+    }
 };
 
 const processResultRecord = async (record: DynamoDBRecord, dataMapper: DataMapper): Promise<void> => {
     switch (record.eventName) {
         case 'INSERT':
-            console.log('inserting data');
             await processInsertPlayerResult(record, dataMapper);
             break;
         case 'MODIFY':
