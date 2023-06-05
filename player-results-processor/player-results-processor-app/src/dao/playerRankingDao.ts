@@ -7,8 +7,9 @@ export const put = (playerResult: PlayerRanking, dataMapper: DataMapper): Promis
     return dataMapper.put(playerResult);
 };
 
-export const get = (playerResult: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {
-    return dataMapper.get(playerResult);
+export const get = (playerRanking: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {
+    console.log('getting player ranking data');
+    return dataMapper.get(playerRanking);
 };
 
 export const update = (playerResult: PlayerRanking, dataMapper: DataMapper): Promise<PlayerRanking> => {

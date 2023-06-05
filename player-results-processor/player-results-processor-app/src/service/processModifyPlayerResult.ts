@@ -5,14 +5,14 @@ import PlayerRanking from '@/model/PlayerRanking';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { DynamoDBRecord } from 'aws-lambda';
 
-export default (record: DynamoDBRecord, dataMapper: DataMapper): void => {
+export default async (record: DynamoDBRecord, dataMapper: DataMapper): Promise<void> => {
     const firstName = record.dynamodb?.NewImage?.firstName.S;
     const lastName = record.dynamodb?.NewImage?.lastName.S;
     const updatedPoints = record.dynamodb?.NewImage?.points.N;
     const currentPoints = record.dynamodb?.OldImage?.points.N;
 
     if (firstName && lastName && updatedPoints && currentPoints) {
-        processModifyPlayerResult(firstName, lastName, +updatedPoints, +currentPoints, dataMapper);
+        await processModifyPlayerResult(firstName, lastName, +updatedPoints, +currentPoints, dataMapper);
     } else {
         logger.error(`error processing DynamoDB record ${record.eventID}`);
     }
