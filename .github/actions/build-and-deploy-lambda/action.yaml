@@ -2,23 +2,23 @@ name: Build and Deploy Lambda
 description: Builds and Deploys AWS Lambda
 inputs:
   application-name:
-    description: name of application
+    description: Name of application
     required: true
   folder-name:
-    description: folder when application source code in location
+    description: Folder when application source code in location
     required: true
   s3-bucket:
-    description: s3 bucket containing lambda binaries
+    description: S3 bucket containing AWS Lambda binaries
     required: true  
   s3-prefix:
-    description: s3 folder in tennis app infra s3 bucket
+    description: S3 folder in tennis app infra S3 bucket
     required: true
   has-api:
     description: Does API Gateway expose Lambda APIs
     default: 'false'    
 outputs:
   api-url:
-    description: url of api for API Gateway 
+    description: URL of the API on API Gateway 
     value: ${{ steps.get-api-url.outputs.api-url }} 
 runs:
   using: composite

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       s3-bucket:
-        description: s3 bucket containing your lambda binaries to deploy
+        description: S3 bucket containing AWS Lambda binaries to deploy
         type: string
         required: true
 jobs:
