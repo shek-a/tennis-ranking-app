@@ -1,5 +1,11 @@
 name: Deploy Tennis Rankings Application Stack
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      s3-bucket:
+        description: S3 bucket containing AWS Lambda binaries to deploy
+        type: string
+        required: true
 jobs:
   deploy-player-tournament-results-app:
     name: Deploy Player Tournament Results Application
@@ -19,11 +25,11 @@ jobs:
         with:
           application-name: player-tournament-results-app
           folder-name: player-tournament-results
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-tournament-results
           has-api: 'true'       
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "Player Tournament Results Application URL - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
   deploy-player-rankings-app:
     name: Deploy Player Rankings Application
     runs-on: ubuntu-latest
@@ -42,11 +48,11 @@ jobs:
         with:
           application-name: player-rankings-app
           folder-name: player-rankings
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "Player Rankings Application URL - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
   deploy-player-results-processor-app:
     needs: [deploy-player-tournament-results-app, deploy-player-rankings-app]
     name: Deploy Player Results Processor Application
@@ -66,6 +72,6 @@ jobs:
         with:
           application-name: player-results-processor-app
           folder-name: player-results-processor
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-results-processor
           has-api: 'false'                               
