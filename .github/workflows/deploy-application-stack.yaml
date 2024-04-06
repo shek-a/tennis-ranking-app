@@ -25,7 +25,7 @@ jobs:
         with:
           application-name: player-tournament-results-app
           folder-name: player-tournament-results
-          s3-bucket: ${{ s3-bucket }}
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-tournament-results
           has-api: 'true'       
       - name: Create Build Summary  
@@ -48,7 +48,7 @@ jobs:
         with:
           application-name: player-rankings-app
           folder-name: player-rankings
-          s3-bucket: ${{ s3-bucket }}
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
@@ -72,6 +72,6 @@ jobs:
         with:
           application-name: player-results-processor-app
           folder-name: player-results-processor
-          s3-bucket: ${{ s3-bucket }}
+          s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-results-processor
           has-api: 'false'                               
