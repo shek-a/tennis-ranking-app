@@ -1,17 +1,17 @@
 name: Build and Deploy Lambda
 description: Builds and Deploys AWS Lambda
 inputs:
-  application-name:
-    description: Name of application
+  service-name:
+    description: Name of service
     required: true
   folder-name:
-    description: Folder when application source code in location
+    description: Folder when service source code in location
     required: true
   s3-bucket:
     description: S3 bucket containing AWS Lambda binaries
     required: true  
   s3-prefix:
-    description: S3 folder in tennis app infra S3 bucket
+    description: S3 folder in the S3 bucket containing AWS Lambda binaries
     required: true
   has-api:
     description: Does API Gateway expose Lambda APIs
@@ -25,7 +25,7 @@ runs:
   steps:
       - name: Install dependencies
         run: |
-          cd ${{ inputs.folder-name }}/${{ inputs.application-name }}
+          cd ${{ inputs.folder-name }}/${{ inputs.service-name }}
           npm install
           npm install -g esbuild
         shell: bash
@@ -34,7 +34,7 @@ runs:
           cd ${{ inputs.folder-name }}
           docker-compose up -d
           sleep 10
-          cd ${{ inputs.application-name }}
+          cd ${{ inputs.service-name }}
           npm test
         shell: bash        
       - name: Build and Package
@@ -52,7 +52,7 @@ runs:
         id: get-api-url
         if: inputs.has-api == 'true'
         run: |
-          APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
-          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${APP_API_CF_EXPORT_NAME}'].Value" --output text)
+          SERVICE_API_CF_EXPORT_NAME=${{ inputs.service-name }}-api-url
+          API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${SERVICE_API_CF_EXPORT_NAME}'].Value" --output text)
           echo "api-url=${API_URL}" >> $GITHUB_OUTPUT
         shell: bash
