@@ -23,7 +23,7 @@ jobs:
         id: deploy-player-tournament-results-service
         uses: ./.github/actions/build-and-deploy-lambda
         with:
-          service-name: player-tournament-results-service
+          service-name: player-tournament-results-app
           folder-name: player-tournament-results
           s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-tournament-results
@@ -46,7 +46,7 @@ jobs:
         id: deploy-player-rankings-service
         uses: ./.github/actions/build-and-deploy-lambda
         with:
-          service-name: player-rankings-service
+          service-name: player-rankings-app
           folder-name: player-rankings
           s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-rankings
@@ -70,7 +70,7 @@ jobs:
         id: deploy-player-results-processor-service
         uses: ./.github/actions/build-and-deploy-lambda
         with:
-          service-name: player-results-processor-service
+          service-name: player-results-processor-app
           folder-name: player-results-processor
           s3-bucket: ${{ inputs.s3-bucket }}
           s3-prefix: player-results-processor
