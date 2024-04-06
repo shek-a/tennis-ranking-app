@@ -8,7 +8,7 @@ inputs:
     description: folder when application source code in location
     required: true
   s3-bucket:
-    description: s3 bucket containg lambda binaries
+    description: s3 bucket containing lambda binaries
     required: true  
   s3-prefix:
     description: s3 folder in tennis app infra s3 bucket
@@ -54,5 +54,5 @@ runs:
         run: |
           APP_API_CF_EXPORT_NAME=${{ inputs.application-name }}-api-url
           API_URL=$(aws cloudformation list-exports --query "Exports[?Name=='${APP_API_CF_EXPORT_NAME}'].Value" --output text)
-          echo "api-url=${API_URL}" >> $GITHUB_OUTPUT
+          echo "${{ inputs.application-name }} host: ${API_URL}" >> $GITHUB_STEP_SUMMARY
         shell: bash

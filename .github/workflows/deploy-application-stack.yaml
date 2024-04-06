@@ -1,5 +1,11 @@
 name: Deploy Tennis Rankings Application Stack
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      s3-bucket:
+        description: s3 bucket containing your lambda binaries to deploy
+        type: string
+        required: true
 jobs:
   deploy-player-tournament-results-app:
     name: Deploy Player Tournament Results Application
@@ -19,7 +25,7 @@ jobs:
         with:
           application-name: player-tournament-results-app
           folder-name: player-tournament-results
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ s3-bucket }}
           s3-prefix: player-tournament-results
           has-api: 'true'       
       - name: Create Build Summary  
@@ -42,7 +48,7 @@ jobs:
         with:
           application-name: player-rankings-app
           folder-name: player-rankings
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ s3-bucket }}
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
@@ -66,6 +72,6 @@ jobs:
         with:
           application-name: player-results-processor-app
           folder-name: player-results-processor
-          s3-bucket: sheka-infra-test
+          s3-bucket: ${{ s3-bucket }}
           s3-prefix: player-results-processor
           has-api: 'false'                               
