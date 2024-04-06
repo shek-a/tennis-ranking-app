@@ -6,7 +6,15 @@ The Player Rankings Service runs on AWS Lambda exposing a REST API via API Gatew
 
 Below are some of the sample requests:
 
-#### Geting player rankings
+#### Geting all player rankings
 ``` 
 PUT <API Gateway host name>/Prod/player-rankings
 ```
+
+#### Geting a player rankings by first name
+``` 
+PUT <API Gateway host name>/Prod/player-rankings?firstName=Roger
+```
+
+**NOTE**  
+Refer to the GitHub Action workflow [Deploy Tennis Rankings Application Stack](https://github.com/shek-a/tennis-ranking-app/actions/workflows/deploy-application-stack.yaml) workflow summary for the API Gateway host name.

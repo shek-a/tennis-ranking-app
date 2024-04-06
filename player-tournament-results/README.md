@@ -6,13 +6,14 @@ The Player Tournament Results Service runs on AWS Lambda exposing REST APIs via 
 
 Below are some of the sample requests:
 
+
 #### Submitting a player result
 ``` 
 PUT <API Gateway host name>/Prod/player-result
 {
     "firstName": "Roger",
     "lastName": "Federer",
-    "dateOfBirth": "1980-02-16",
+    "dateOfBirth": "1981-08-08",
     "tournament": "2015 Madrid",
     "points": 1000
 }
@@ -23,12 +24,14 @@ PUT <API Gateway host name>/Prod/player-result
 GET <API Gateway host name>/Prod/player-result
 ```
 
-#### Get all player results by first name
+#### Get a player results by first name
 ```
-GET <API Gateway host name>/Prod/player-result?firstName=Rafa
+GET <API Gateway host name>/Prod/player-result?firstName=Roger
 ```
 
 #### Delete player result
 ```
 GET <API Gateway host name>/Prod/player-result/{player-id}
 ```
+**NOTE**  
+Refer to the GitHub Action workflow [Deploy Tennis Rankings Application Stack](https://github.com/shek-a/tennis-ranking-app/actions/workflows/deploy-application-stack.yaml) workflow summary for the API Gateway host name.
