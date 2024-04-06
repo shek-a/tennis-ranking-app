@@ -1,6 +1,6 @@
 # Player Tournament Results Service
 
-The Player Tournament Results Service runs on AWS Lambda exposing REST APIs via API Gateway allow tennis players to submit the points earned from tournaments they have entered.  The records are stored in DynamoDB. 
+The Player Tournament Results Service runs on AWS Lambda exposing REST APIs via API Gateway allowing tennis players to submit the points earned from tournaments they have entered.  The records are stored in DynamoDB. 
 
 ### Calling the Application's API
 
