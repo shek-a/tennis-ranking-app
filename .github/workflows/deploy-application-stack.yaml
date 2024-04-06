@@ -29,7 +29,7 @@ jobs:
           s3-prefix: player-tournament-results
           has-api: 'true'       
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "Player Tournament Results Application URL - ${{ steps.deploy-player-tournament-results-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
   deploy-player-rankings-app:
     name: Deploy Player Rankings Application
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
           s3-prefix: player-rankings
           has-api: 'true'          
       - name: Create Build Summary  
-        run: echo "url - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "Player Rankings Application URL - ${{ steps.deploy-player-rankings-app.outputs.api-url }}" >> $GITHUB_STEP_SUMMARY
   deploy-player-results-processor-app:
     needs: [deploy-player-tournament-results-app, deploy-player-rankings-app]
     name: Deploy Player Results Processor Application
